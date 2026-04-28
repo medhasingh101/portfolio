@@ -388,7 +388,7 @@ function renderHomePage() {
         <div class="hero-main">
           <div class="hero-copy">
             <p class="eyebrow hero-label">Product Designer / Based in [City]</p>
-            ${typeReveal("Your Name Here", "h1", "hero-title", 300)}
+            ${typeReveal("Medha Singh", "h1", "hero-title", 300)}
             <div class="bio-intro" aria-label="Designer bio highlights">
               <p class="bio-intro-line">
                 ${renderBioIntro()}
@@ -446,7 +446,7 @@ function renderHomePage() {
                 <div>
                   ${typeReveal("I design with clarity and intention", "h2", "about-title", 80)}
                   <p class="about-copy about-copy-spaced">
-                    Hi, I'm [Your Name], a product designer with 5+ years working across fintech, health, and SaaS. I believe great design lives at the intersection of deep user empathy and sharp business thinking.
+                    Hi, I'm Medha Singh, a product designer with 5+ years working across fintech, health, and SaaS. I believe great design lives at the intersection of deep user empathy and sharp business thinking.
                   </p>
                   <p class="about-copy">
                     I'm most at home in the messy middle, turning fuzzy problems into clear, elegant solutions.
@@ -587,7 +587,7 @@ function renderMain() {
 function renderNav() {
   return `
     <nav class="site-nav">
-      <button type="button" class="nav-button" data-hover data-nav-home>Your Name</button>
+      <button type="button" class="nav-button" data-hover data-nav-home>Medha Singh</button>
       <div class="site-nav-links">
         <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
           <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work v</button>
@@ -634,7 +634,7 @@ function renderNav() {
 function renderFooter() {
   return `
     <footer class="site-footer">
-      <p class="site-footer-copy">(c) 2026 Your Name</p>
+      <p class="site-footer-copy">(c) 2026 Medha Singh</p>
       <p class="site-footer-copy">Designed & coded with intention</p>
     </footer>
   `;
