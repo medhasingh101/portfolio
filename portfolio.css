@@ -58,7 +58,7 @@ button {
 
 .app-shell.theme-light {
   --ink: #1f2937;
-  --paper: #f5f7fa;
+  --paper: #fbfbf9;
   --muted: #6b7280;
   --accent: #1f3b73;
   --rule: rgba(148, 163, 184, 0.28);
@@ -183,7 +183,8 @@ button {
   display: inline-block;
   margin-right: 0.28em;
   overflow: hidden;
-  vertical-align: bottom;
+  vertical-align: baseline;
+  padding-bottom: 0.1em;
 }
 
 .type-reveal-char {
@@ -444,8 +445,9 @@ button {
   font-family: var(--serif);
   font-size: clamp(60px, 9vw, 116px);
   font-weight: 300;
-  line-height: 0.96;
+  line-height: 1.08;
   letter-spacing: -0.03em;
+  padding-bottom: 0.1em;
 }
 
 .hero-summary {
@@ -1588,7 +1590,7 @@ button {
 
   .hero-title {
     font-size: clamp(52px, 16vw, 82px);
-    line-height: 0.92;
+    line-height: 1.02;
     margin-bottom: 24px;
   }
 
