@@ -213,7 +213,9 @@ let typeRevealObserver = null;
 let bioTypeTimer = null;
 let dynaspot = null;
 let dynaspotMediaQuery = null;
+let heroEnvelopeInitialized = false;
 let stackPanelsInitialized = false;
+const HERO_ENVELOPE_DISTANCE = 0.9;
 const STACK_TOP_OFFSET = 104;
 const STACK_PANEL_GAP = 24;
 const STACK_MIN_REVEAL_DISTANCE = 220;
@@ -383,35 +385,44 @@ function renderBioIntro() {
 function renderHomePage() {
   return `
     <div>
-      <section class="hero">
-        <div class="hero-glow"></div>
-        <div class="hero-main">
-          <div class="hero-copy">
-            <p class="eyebrow hero-label">Product Designer / Based in [City]</p>
-            ${typeReveal("Medha Singh", "h1", "hero-title", 300)}
-            <div class="bio-intro" aria-label="Designer bio highlights">
-              <p class="bio-intro-line">
-                ${renderBioIntro()}
-              </p>
+      <section class="hero-sequence" data-hero-sequence>
+        <div class="hero-sticky" data-hero-sticky>
+          <div class="hero-envelope-scene" data-hero-envelope>
+            <div class="hero-envelope-back" aria-hidden="true"></div>
+            <div class="hero-envelope-pocket" aria-hidden="true"></div>
+            <div class="hero-envelope-flap" aria-hidden="true"></div>
+            <div class="hero hero-card">
+              <div class="hero-glow"></div>
+              <div class="hero-main">
+                <div class="hero-copy">
+                  <p class="eyebrow hero-label">Product Designer / Based in [City]</p>
+                  ${typeReveal("Medha Singh", "h1", "hero-title", 300)}
+                  <div class="bio-intro" aria-label="Designer bio highlights">
+                    <p class="bio-intro-line">
+                      ${renderBioIntro()}
+                    </p>
+                  </div>
+                </div>
+                <div class="hero-stats">
+                  <div class="hero-stat">
+                    <div class="hero-stat-value">5+</div>
+                    <div class="hero-stat-label">Years</div>
+                  </div>
+                  <div class="hero-stat">
+                    <div class="hero-stat-value">20+</div>
+                    <div class="hero-stat-label">Projects</div>
+                  </div>
+                  <div class="hero-stat">
+                    <div class="hero-stat-value">3</div>
+                    <div class="hero-stat-label">Industries</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-scroll">
+                <span class="hero-scroll-label">scroll</span>
+              </div>
             </div>
           </div>
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <div class="hero-stat-value">5+</div>
-              <div class="hero-stat-label">Years</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">20+</div>
-              <div class="hero-stat-label">Projects</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">3</div>
-              <div class="hero-stat-label">Industries</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-scroll">
-          <span class="hero-scroll-label">scroll</span>
         </div>
       </section>
 
@@ -826,6 +837,7 @@ function attachEvents() {
 
   initializeTypeReveal();
   initializeDynaspot();
+  initializeHeroEnvelope();
   initializeStackPanels();
 }
 
@@ -922,6 +934,46 @@ function getStackMetrics(sequence) {
   const topOffset = Number.parseFloat(styles.getPropertyValue("--stack-top")) || STACK_TOP_OFFSET;
   const panelGap = Number.parseFloat(styles.getPropertyValue("--stack-panel-gap")) || STACK_PANEL_GAP;
   return { topOffset, panelGap };
+}
+
+function getHeroEnvelopeElements() {
+  return {
+    sequence: document.querySelector("[data-hero-sequence]"),
+    sticky: document.querySelector("[data-hero-sticky]"),
+    envelope: document.querySelector("[data-hero-envelope]"),
+  };
+}
+
+function syncHeroEnvelope() {
+  const { sequence, sticky, envelope } = getHeroEnvelopeElements();
+
+  if (!sequence || !sticky || !envelope) return;
+
+  const revealDistance = Math.max(window.innerHeight * HERO_ENVELOPE_DISTANCE, 520);
+  const progress = clamp((window.scrollY - sequence.offsetTop) / revealDistance, 0, 1);
+  const pullProgress = clamp(progress / 0.76, 0, 1);
+  const contentProgress = clamp((progress - 0.52) / 0.28, 0, 1);
+  const envelopeFade = clamp((progress - 0.68) / 0.22, 0, 1);
+
+  sequence.style.minHeight = `${sticky.offsetHeight + revealDistance}px`;
+  envelope.style.setProperty("--envelope-progress", progress.toFixed(4));
+  envelope.style.setProperty("--envelope-inverse", (1 - progress).toFixed(4));
+  envelope.style.setProperty("--envelope-pull-progress", pullProgress.toFixed(4));
+  envelope.style.setProperty("--envelope-content-progress", contentProgress.toFixed(4));
+  envelope.style.setProperty("--envelope-fade-progress", envelopeFade.toFixed(4));
+}
+
+function initializeHeroEnvelope() {
+  const { sequence, sticky, envelope } = getHeroEnvelopeElements();
+  if (!sequence || !sticky || !envelope) return;
+
+  syncHeroEnvelope();
+
+  if (heroEnvelopeInitialized) return;
+  heroEnvelopeInitialized = true;
+
+  window.addEventListener("scroll", syncHeroEnvelope, { passive: true });
+  window.addEventListener("resize", syncHeroEnvelope);
 }
 
 function resetStackPanels(elements) {
