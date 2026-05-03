@@ -20,7 +20,7 @@
   }
 
   function cardBackground(project, state) {
-    return state.dark ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614" : project.color;
+    return state.dark ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614" : "#ffffff";
   }
 
   function sectionHeader(index, title) {
@@ -48,14 +48,269 @@
     return `<${tag} class="${className} type-reveal" data-type-reveal data-delay="${delay}">${words}</${tag}>`;
   }
 
+  function buildStyleAttribute(entries) {
+    const styleValue = entries
+      .filter(([, value]) => value !== undefined && value !== null && value !== "")
+      .map(([name, value]) => `${name}:${value}`)
+      .join(";");
+
+    return styleValue ? ` style="${escapeHtml(styleValue)}"` : "";
+  }
+
+  function getPreviewStyle(project) {
+    return buildStyleAttribute([
+      ["--preview-shell-bg", project.previewOuterBackground],
+      ["--preview-shell-border", project.previewOuterBorder],
+      ["--preview-stage-bg", project.previewStageBackground],
+      ["--preview-stage-width", project.previewStageWidth],
+      ["--preview-stage-aspect", project.previewStageAspect],
+      ["--preview-stage-radius", project.previewStageRadius],
+      ["--preview-stage-border", project.previewStageBorder],
+      ["--preview-image-fit", project.previewImageFit],
+      ["--preview-image-position", project.previewImagePosition],
+      ["--preview-image-padding", project.previewImagePadding],
+      ["--preview-image-scale", project.previewImageScale],
+    ]);
+  }
+
+  function renderPreviewContent(project) {
+    if (project.previewImage) {
+      return `
+        <div class="project-card-preview-stage">
+          <img class="project-card-preview-image" src="${escapeHtml(project.previewImage)}" alt="${escapeHtml(project.previewAlt || project.title)}" loading="lazy">
+        </div>
+      `;
+    }
+
+    return `<span class="label-inline">${escapeHtml(project.previewLabel || "Preview")}</span>`;
+  }
+
+  function renderDetailCover(project) {
+    const coverSrc = project.full.coverImage || project.previewImage;
+    const coverAlt = project.full.coverAlt || project.previewAlt || project.title;
+
+    if (coverSrc) {
+      return `
+        <div class="detail-cover">
+          <img class="detail-cover-image" src="${escapeHtml(coverSrc)}" alt="${escapeHtml(coverAlt)}" loading="lazy">
+        </div>
+      `;
+    }
+
+    return `
+      <div class="detail-cover">
+        <span class="label-inline">Cover Image</span>
+      </div>
+    `;
+  }
+
+  function renderDetailGallery(project) {
+    if (!project.full.gallery?.length) return "";
+
+    return `
+      <section class="detail-gallery" aria-label="Project visuals">
+        ${project.full.gallery
+          .map(
+            (image) => `
+              <figure class="detail-gallery-figure">
+                <div class="detail-gallery-media">
+                  <img
+                    class="detail-gallery-image"
+                    src="${escapeHtml(image.src)}"
+                    alt="${escapeHtml(image.alt || project.title)}"
+                    loading="lazy"
+                  >
+                </div>
+                ${image.caption ? `<figcaption class="detail-gallery-caption">${escapeHtml(image.caption)}</figcaption>` : ""}
+              </figure>
+            `
+          )
+          .join("")}
+      </section>
+    `;
+  }
+
+  function getProjectSections(project) {
+    if (project.full.modules?.length) {
+      return project.full.modules
+        .filter((module) => module.type === "section")
+        .map((module) => ({
+          id: module.id || slugify(module.title),
+          label: module.title,
+        }));
+    }
+
+    return [
+      { id: "overview", label: "Overview" },
+      ...project.full.sections.map((section) => ({
+        id: slugify(section.heading),
+        label: section.heading,
+      })),
+    ];
+  }
+
+  function renderProjectSidebar(sections) {
+    return `
+      <aside class="detail-sidebar">
+        <button type="button" class="button-ghost detail-back" data-hover data-nav-back>&lt;- Back</button>
+        <nav class="detail-toc" aria-label="Case study sections">
+          ${sections
+            .map(
+              (section) => `
+                <a href="#${escapeHtml(section.id)}" class="detail-toc-link">${escapeHtml(section.label)}</a>
+              `
+            )
+            .join("")}
+        </nav>
+      </aside>
+    `;
+  }
+
+  function renderProjectMeta(project) {
+    const metaItems =
+      project.full.metaItems ||
+      [
+        { label: "Role", value: project.full.role },
+        project.full.team ? { label: "Team", value: project.full.team } : null,
+        { label: "Duration", value: project.full.duration },
+        { label: "Outcome", value: project.full.outcome },
+      ].filter(Boolean);
+
+    return `
+      <div class="detail-meta-grid case-study-meta-grid">
+        ${metaItems
+          .map(
+            (item) => `
+              <div class="case-study-meta-item">
+                <p class="case-study-meta-label">${escapeHtml(item.label)}</p>
+                <p class="case-study-meta-value">${escapeHtml(item.value)}</p>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+  function renderMediaModule(module, projectTitle) {
+    const loading = module.loading || "lazy";
+    const layoutClass = module.layout ? ` case-study-media-${module.layout}` : "";
+
+    return `
+      <figure class="case-study-media${layoutClass}">
+        <img
+          class="case-study-media-image"
+          src="${escapeHtml(module.src)}"
+          alt="${escapeHtml(module.alt || projectTitle)}"
+          loading="${escapeHtml(loading)}"
+        >
+        ${module.caption ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
+  function renderVideoModule(module, projectTitle) {
+    const layoutClass = module.layout ? ` case-study-media-${module.layout}` : "";
+    const autoplay = module.autoplay ? " autoplay" : "";
+    const muted = module.muted === false ? "" : " muted";
+    const loop = module.loop ? " loop" : "";
+    const controls = module.controls === false ? "" : " controls";
+    const playsInline = module.playsInline === false ? "" : " playsinline";
+    const poster = module.poster ? ` poster="${escapeHtml(module.poster)}"` : "";
+
+    return `
+      <figure class="case-study-media${layoutClass}">
+        <video class="case-study-media-image" ${controls}${autoplay}${muted}${loop}${playsInline}${poster}>
+          <source src="${escapeHtml(module.src)}" type="${escapeHtml(module.mimeType || "video/mp4")}">
+          ${escapeHtml(module.alt || projectTitle)}
+        </video>
+        ${module.caption ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
+  function renderTextModule(module) {
+    const layoutClass = module.layout ? ` case-study-text-${module.layout}` : "";
+    return `<section class="case-study-text${layoutClass}">${module.html}</section>`;
+  }
+
+  function renderEmbedModule(module) {
+    return `
+      <figure class="case-study-embed">
+        <div class="case-study-embed-frame">
+          <iframe
+            src="${escapeHtml(module.src)}"
+            title="${escapeHtml(module.title || "Embedded prototype")}"
+            allowfullscreen
+            class="case-study-embed-content"
+            sandbox="allow-same-origin allow-scripts allow-pointer-lock allow-forms allow-popups allow-popups-to-escape-sandbox"
+          ></iframe>
+        </div>
+        ${module.caption ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
+  function renderSectionModule(module) {
+    const sectionId = module.id || slugify(module.title);
+
+    return `
+      <section id="${escapeHtml(sectionId)}" class="case-study-section">
+        <h2 class="case-study-section-kicker">${escapeHtml(module.title)}</h2>
+        <div class="case-study-section-body">
+          ${module.html || ""}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderStructuredProjectPage(project) {
+    const detailSections = getProjectSections(project);
+
+    return `
+      <div class="project-detail page-shell page-shell-narrow">
+        <div class="detail-layout">
+          ${renderProjectSidebar(detailSections)}
+
+          <div class="detail-main detail-main-structured">
+            <div class="detail-tags">
+              ${project.tags.map((tag) => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join("")}
+            </div>
+
+            <header class="detail-hero">
+              <p class="eyebrow detail-subtitle">${escapeHtml(project.subtitle)}</p>
+              <h1 class="detail-title">${escapeHtml(project.title)}</h1>
+              <p class="detail-overview">${escapeHtml(project.full.overview)}</p>
+            </header>
+
+            ${renderProjectMeta(project)}
+
+            <div class="case-study-flow">
+              ${project.full.modules
+                .map((module) => {
+                  if (module.type === "section") return renderSectionModule(module);
+                  if (module.type === "text") return renderTextModule(module);
+                  if (module.type === "image") return renderMediaModule(module, project.title);
+                  if (module.type === "video") return renderVideoModule(module, project.title);
+                  if (module.type === "embed") return renderEmbedModule(module);
+                  return "";
+                })
+                .join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function projectCard(project, state) {
     return `
       <article class="project-card" data-hover data-project-id="${project.id}" style="background:${cardBackground(project, state)}">
         <div class="project-card-tags">
           ${project.tags.map((tag) => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join("")}
         </div>
-        <div class="project-card-preview">
-          <span class="label-inline">Preview</span>
+        <div class="project-card-preview"${getPreviewStyle(project)}>
+          ${renderPreviewContent(project)}
         </div>
         <p class="eyebrow project-card-subtitle">${escapeHtml(project.subtitle)}</p>
         <h3 class="project-card-title">${escapeHtml(project.title)}</h3>
@@ -233,30 +488,13 @@
     `;
   }
 
-  function renderProjectPage(project) {
-    const detailSections = [
-      { id: "overview", label: "Overview" },
-      ...project.full.sections.map((section) => ({
-        id: slugify(section.heading),
-        label: section.heading,
-      })),
-    ];
+  function renderSimpleProjectPage(project) {
+    const detailSections = getProjectSections(project);
 
     return `
       <div class="project-detail page-shell page-shell-narrow">
         <div class="detail-layout">
-          <aside class="detail-sidebar">
-            <button type="button" class="button-ghost detail-back" data-hover data-nav-back>&lt;- Back</button>
-            <nav class="detail-toc" aria-label="Case study sections">
-              ${detailSections
-                .map(
-                  (section) => `
-                    <a href="#${escapeHtml(section.id)}" class="detail-toc-link">${escapeHtml(section.label)}</a>
-                  `
-                )
-                .join("")}
-            </nav>
-          </aside>
+          ${renderProjectSidebar(detailSections)}
 
           <div class="detail-main">
             <div class="detail-tags">
@@ -269,24 +507,10 @@
               <p class="detail-overview">${escapeHtml(project.full.overview)}</p>
             </header>
 
-            <div class="detail-meta-grid">
-              <div>
-                <p class="label-inline detail-meta-label">Role</p>
-                <p class="detail-meta-value">${escapeHtml(project.full.role)}</p>
-              </div>
-              <div>
-                <p class="label-inline detail-meta-label">Duration</p>
-                <p class="detail-meta-value">${escapeHtml(project.full.duration)}</p>
-              </div>
-              <div>
-                <p class="label-inline detail-meta-label">Outcome</p>
-                <p class="detail-meta-value">${escapeHtml(project.full.outcome)}</p>
-              </div>
-            </div>
+            ${renderProjectMeta(project)}
 
-            <div class="detail-cover">
-              <span class="label-inline">Cover Image</span>
-            </div>
+            ${renderDetailCover(project)}
+            ${renderDetailGallery(project)}
 
             <section id="overview" class="detail-section detail-section-editorial">
               <h2 class="detail-section-title">Overview</h2>
@@ -309,6 +533,14 @@
         </div>
       </div>
     `;
+  }
+
+  function renderProjectPage(project) {
+    if (project.full.modules?.length) {
+      return renderStructuredProjectPage(project);
+    }
+
+    return renderSimpleProjectPage(project);
   }
 
   function renderContactModal(state) {

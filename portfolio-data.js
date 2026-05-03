@@ -1,34 +1,7 @@
 (function () {
+  const projectLibrary = window.portfolioProjects || {};
   const PROJECTS = [
-    {
-      id: 1,
-      title: "Checkout Redesign",
-      subtitle: "Fintech / 2024",
-      desc: "End-to-end redesign of a fintech checkout flow serving 2M users. Reduced drop-off by 34% through progressive disclosure and trust signals.",
-      tags: ["UX Design", "Research"],
-      color: "#edeae4",
-      full: {
-        overview:
-          "A complete overhaul of a checkout experience serving 2M+ users. The goal was to reduce cognitive load and increase trust at the most critical moment of conversion.",
-        role: "Lead UX Designer",
-        duration: "4 months",
-        outcome: "34% drop-off reduction / +18% conversion / 4.6 stars",
-        sections: [
-          {
-            heading: "The Problem",
-            body: "Users were abandoning carts at the payment step due to overwhelming form density, unclear error states, and lack of trust signals at the point of commitment.",
-          },
-          {
-            heading: "Research",
-            body: "Conducted 12 user interviews, session recordings (n=800), and a competitive audit of 8 fintech products. Key insight: users needed progress certainty throughout, not just at the end.",
-          },
-          {
-            heading: "Solution",
-            body: "Progressive disclosure flow broke one dense screen into three lightweight steps. Introduced inline validation and contextually placed trust badges.",
-          },
-        ],
-      },
-    },
+    projectLibrary.netprep,
     {
       id: 2,
       title: "Design System",
@@ -157,11 +130,12 @@
   ];
 
   const DARK_CARD_COLORS = {
-    "#edeae4": "#1e1c18",
-    "#e4ede9": "#161e1b",
-    "#ebe4ed": "#1c1620",
-    "#ede9e0": "#1e1b12",
-    "#e0e4ed": "#12161e",
+    "#ece6df": "#101827",
+    "#edeae4": "#121b2b",
+    "#e4ede9": "#162132",
+    "#ebe4ed": "#172235",
+    "#ede9e0": "#0f1726",
+    "#e0e4ed": "#0d1522",
   };
 
   const CONTACT_LINKS = [
