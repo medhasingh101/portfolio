@@ -10,10 +10,15 @@
   const HERO_ENVELOPE_UNFOLD_END = 0.88;
   const HERO_ENVELOPE_CONTENT_START = 0.84;
   const HERO_ENVELOPE_CONTENT_END = 0.96;
+  const HERO_ENVELOPE_COPY_START = 0.24;
+  const HERO_ENVELOPE_COPY_END = 0.6;
   const HERO_ENVELOPE_OPEN_CLASS_THRESHOLD = 0.92;
   const HERO_CARD_SHOW_THRESHOLD = 0.03;
 
   let initialized = false;
+  let currentScene = null;
+  let currentProgress = 0;
+  let idleAnimationFrame = null;
 
   function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
@@ -62,6 +67,11 @@
 
   function applyProgress(scene, progressState) {
     const { progress, flapProgress, riseProgress, settleProgress, unfoldProgress, contentProgress } = progressState;
+    const copyProgress = clamp(
+      (progress - HERO_ENVELOPE_COPY_START) / (HERO_ENVELOPE_COPY_END - HERO_ENVELOPE_COPY_START),
+      0,
+      1,
+    );
 
     scene.style.setProperty("--envelope-progress", progress.toFixed(4));
     scene.style.setProperty("--envelope-flap-progress", flapProgress.toFixed(4));
@@ -69,7 +79,21 @@
     scene.style.setProperty("--envelope-settle-progress", settleProgress.toFixed(4));
     scene.style.setProperty("--envelope-content-progress", contentProgress.toFixed(4));
     scene.style.setProperty("--envelope-unfold-progress", unfoldProgress.toFixed(4));
+    scene.style.setProperty("--letter-copy-progress", copyProgress.toFixed(4));
     scene.classList.toggle("is-envelope-open", flapProgress > HERO_ENVELOPE_OPEN_CLASS_THRESHOLD);
+    scene.classList.toggle("has-scrolled", progress > 0.01);
+  }
+
+  function animateIdle(now) {
+    if (currentScene) {
+      const isIdle = currentProgress <= 0.01;
+      const pulse = isIdle ? (Math.sin(now / 520) + 1) / 2 : 0;
+
+      currentScene.style.setProperty("--envelope-idle-pulse", pulse.toFixed(4));
+      currentScene.classList.toggle("is-idle", isIdle);
+    }
+
+    idleAnimationFrame = window.requestAnimationFrame(animateIdle);
   }
 
   function syncHeroCardHandoff(scene, letter, heroCard, settleProgress) {
@@ -105,6 +129,8 @@
     if (!sequence || !sticky || !scene) return;
 
     const progressState = getProgressState(window.scrollY, sequence.offsetTop);
+    currentScene = scene;
+    currentProgress = progressState.progress;
     sequence.style.minHeight = `${sticky.offsetHeight + progressState.revealDistance}px`;
 
     applyProgress(scene, progressState);
@@ -122,6 +148,10 @@
 
     window.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);
+
+    if (!idleAnimationFrame) {
+      idleAnimationFrame = window.requestAnimationFrame(animateIdle);
+    }
   }
 
   window.heroEnvelope = {

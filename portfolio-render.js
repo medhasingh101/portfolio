@@ -20,7 +20,9 @@
   }
 
   function cardBackground(project, state) {
-    return state.dark ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614" : "#ffffff";
+    return state.dark
+      ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614"
+      : project.cardBackgroundLight || "#eaf0f8";
   }
 
   function sectionHeader(index, title) {
@@ -75,11 +77,7 @@
 
   function renderPreviewContent(project) {
     if (project.previewImage) {
-      return `
-        <div class="project-card-preview-stage">
-          <img class="project-card-preview-image" src="${escapeHtml(project.previewImage)}" alt="${escapeHtml(project.previewAlt || project.title)}" loading="lazy">
-        </div>
-      `;
+      return `<img class="project-card-preview-image" src="${escapeHtml(project.previewImage)}" alt="${escapeHtml(project.previewAlt || project.title)}" loading="lazy">`;
     }
 
     return `<span class="label-inline">${escapeHtml(project.previewLabel || "Preview")}</span>`;
@@ -92,7 +90,15 @@
     if (coverSrc) {
       return `
         <div class="detail-cover">
-          <img class="detail-cover-image" src="${escapeHtml(coverSrc)}" alt="${escapeHtml(coverAlt)}" loading="lazy">
+          <img
+            class="detail-cover-image"
+            src="${escapeHtml(coverSrc)}"
+            alt="${escapeHtml(coverAlt)}"
+            loading="lazy"
+            data-lightbox-image
+            data-lightbox-src="${escapeHtml(coverSrc)}"
+            data-lightbox-alt="${escapeHtml(coverAlt)}"
+          >
         </div>
       `;
     }
@@ -119,6 +125,9 @@
                     src="${escapeHtml(image.src)}"
                     alt="${escapeHtml(image.alt || project.title)}"
                     loading="lazy"
+                    data-lightbox-image
+                    data-lightbox-src="${escapeHtml(image.src)}"
+                    data-lightbox-alt="${escapeHtml(image.alt || project.title)}"
                   >
                 </div>
                 ${image.caption ? `<figcaption class="detail-gallery-caption">${escapeHtml(image.caption)}</figcaption>` : ""}
@@ -203,6 +212,9 @@
           src="${escapeHtml(module.src)}"
           alt="${escapeHtml(module.alt || projectTitle)}"
           loading="${escapeHtml(loading)}"
+          data-lightbox-image
+          data-lightbox-src="${escapeHtml(module.src)}"
+          data-lightbox-alt="${escapeHtml(module.alt || projectTitle)}"
         >
         ${module.caption ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>` : ""}
       </figure>
@@ -235,8 +247,13 @@
   }
 
   function renderEmbedModule(module) {
+    const embedStyle = buildStyleAttribute([
+      ["--case-study-embed-max-width", module.maxWidth],
+      ["--case-study-embed-aspect", module.aspectRatio],
+    ]);
+
     return `
-      <figure class="case-study-embed">
+      <figure class="case-study-embed"${embedStyle}>
         <div class="case-study-embed-frame">
           <iframe
             src="${escapeHtml(module.src)}"
@@ -304,8 +321,10 @@
   }
 
   function projectCard(project, state) {
+    const cardClassName = project.cardClassName ? ` ${project.cardClassName}` : "";
+
     return `
-      <article class="project-card" data-hover data-project-id="${project.id}" style="background:${cardBackground(project, state)}">
+      <article class="project-card${cardClassName}" data-hover data-project-id="${project.id}" style="background:${cardBackground(project, state)}">
         <div class="project-card-tags">
           ${project.tags.map((tag) => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join("")}
         </div>
@@ -377,6 +396,21 @@
     return window.portfolioData.BIO_INTRO_ITEMS.map((item) => renderBioIntroItem(item, state)).join(" ");
   }
 
+  function renderHeroLetter() {
+    return `
+      <div class="scroll-envelope-letter-content">
+        <p class="scroll-envelope-letter-kicker">letter of introduction</p>
+        ${window.portfolioData.HERO_LETTER_LINES.map(
+          (line, index) => `
+            <p class="scroll-envelope-letter-line" style="--line-delay:${(index * 0.2).toFixed(2)}">
+              ${escapeHtml(line)}
+            </p>
+          `
+        ).join("")}
+      </div>
+    `;
+  }
+
   function renderHomePage(state) {
     return `
       <div>
@@ -385,41 +419,37 @@
             <div class="hero-envelope-scene" data-hero-envelope>
               <div class="scroll-envelope" aria-hidden="true">
                 <div class="scroll-envelope-back"></div>
-                <div class="scroll-envelope-letter"></div>
+                <div class="scroll-envelope-letter">${renderHeroLetter()}</div>
                 <div class="scroll-envelope-flap scroll-envelope-flap-front"></div>
                 <div class="scroll-envelope-flap scroll-envelope-flap-top"></div>
               </div>
+              <p class="hero-envelope-prompt" aria-hidden="true">scroll to open</p>
               <div class="hero hero-card">
                 <div class="hero-card-fold hero-card-fold-top" aria-hidden="true"></div>
                 <div class="hero-card-fold hero-card-fold-bottom" aria-hidden="true"></div>
                 <div class="hero-glow"></div>
                 <div class="hero-main">
                   <div class="hero-copy">
-                    <p class="eyebrow hero-label">Product Designer / Based in [City]</p>
+                    <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
                     ${typeReveal("Medha Singh", "h1", "hero-title", 300)}
+                    <p class="hero-summary">I design digital products that make complex things feel simple.</p>
                     <div class="bio-intro" aria-label="Designer bio highlights">
                       <p class="bio-intro-line">
                         ${renderBioIntro(state)}
                       </p>
                     </div>
+                    <div class="hero-actions">
+                      <button type="button" class="hero-cta" data-hover data-hero-work>See my work -&gt;</button>
+                    </div>
                   </div>
-                  <div class="hero-stats">
-                    <div class="hero-stat">
-                      <div class="hero-stat-value">5+</div>
-                      <div class="hero-stat-label">Years</div>
-                    </div>
-                    <div class="hero-stat">
-                      <div class="hero-stat-value">20+</div>
-                      <div class="hero-stat-label">Projects</div>
-                    </div>
-                    <div class="hero-stat">
-                      <div class="hero-stat-value">3</div>
-                      <div class="hero-stat-label">Industries</div>
-                    </div>
+                  <div class="hero-stats" aria-label="Experience highlights">
+                    ${window.portfolioData.HERO_PROOF_POINTS.map(
+                      (item) => `<span class="hero-proof-item">${escapeHtml(item)}</span>`
+                    ).join("")}
                   </div>
                 </div>
                 <div class="hero-scroll">
-                  <span class="hero-scroll-label">scroll</span>
+                  <span class="hero-scroll-label">selected work below</span>
                 </div>
               </div>
             </div>
@@ -565,6 +595,36 @@
     `;
   }
 
+  function renderImageLightbox(state) {
+    if (!state.lightboxOpen || !state.lightboxSrc) return "";
+
+    return `
+      <div class="image-lightbox-backdrop" data-lightbox-backdrop>
+        <div class="image-lightbox">
+          <div class="image-lightbox-toolbar">
+            <div class="image-lightbox-zoom-label">
+              ${Math.round((state.lightboxZoom || 1) * 100)}%
+              ${state.lightboxZoom > 1 ? `<span class="image-lightbox-hint">drag to explore</span>` : ""}
+            </div>
+            <div class="image-lightbox-actions">
+              <button type="button" class="image-lightbox-button" data-hover data-lightbox-zoom-out aria-label="Zoom out">-</button>
+              <button type="button" class="image-lightbox-button" data-hover data-lightbox-zoom-in aria-label="Zoom in">+</button>
+              <button type="button" class="image-lightbox-button" data-hover data-lightbox-close aria-label="Close image viewer">X</button>
+            </div>
+          </div>
+          <div class="image-lightbox-stage" data-lightbox-stage>
+            <img
+              class="image-lightbox-image"
+              src="${escapeHtml(state.lightboxSrc)}"
+              alt="${escapeHtml(state.lightboxAlt || "Expanded project image")}"
+              style="transform: translate(${state.lightboxPanX || 0}px, ${state.lightboxPanY || 0}px) scale(${state.lightboxZoom || 1})"
+            >
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function renderMain(state) {
     if (state.page === "ux") return renderWorkPage("UX Design", "UX Design", state);
     if (state.page === "graphic") return renderWorkPage("Graphic Design", "Graphic Design", state);
@@ -578,29 +638,17 @@
   function renderNav(state) {
     return `
       <nav class="site-nav">
-        <button type="button" class="nav-button" data-hover data-nav-home>Medha Singh</button>
-        <div class="site-nav-links">
-          <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
-            <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work v</button>
-            <div class="nav-dropdown">
-              <button type="button" class="nav-dropdown-button nav-dropdown-button-bordered" data-hover data-nav-page="ux">UX Design</button>
-              <button type="button" class="nav-dropdown-button" data-hover data-nav-page="graphic">Graphic Design</button>
-            </div>
-          </div>
-          <button type="button" class="nav-button" data-hover data-nav-about>About</button>
-          <button type="button" class="nav-button" data-hover data-contact-open>Contact</button>
-          <div class="nav-socials" aria-label="Social links">
-            <a href="https://linkedin.com/in/yourname" class="nav-social-link" data-hover aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
-                <path d="M6.94 8.5H3.56V20h3.38V8.5ZM5.25 3A2 2 0 1 0 5.3 7a2 2 0 0 0-.05-4ZM20 20h-3.37v-5.6c0-1.34-.03-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.22V8.5h3.24v1.57h.05c.45-.85 1.56-1.75 3.2-1.75 3.42 0 4.05 2.25 4.05 5.18V20Z" />
-              </svg>
-            </a>
-            <a href="https://www.behance.net/yourname" class="nav-social-link" data-hover aria-label="Behance">
-              <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
-                <path d="M3.5 6.5H9c2.2 0 3.75 1.1 3.75 3.05 0 1.2-.56 2.1-1.62 2.58 1.42.38 2.18 1.54 2.18 3.05 0 2.44-2.07 3.52-4.25 3.52H3.5V6.5Zm2.7 4.92h2.4c.84 0 1.46-.38 1.46-1.3 0-1.04-.8-1.26-1.67-1.26H6.2v2.56Zm0 5h2.53c.93 0 1.74-.3 1.74-1.42 0-1.1-.7-1.54-1.72-1.54H6.2v2.96Zm9.72-5.8h4.58v1.35h-4.58v-1.35Zm4.66 4.56c-.24 2.34-2.15 3.82-4.48 3.82-3.34 0-4.92-2.3-5.02-5.5 0-3.14 2.06-5.44 4.92-5.44 3.7 0 4.84 3.46 4.66 5.98h-6.7c-.08 1.56.84 2.62 2.22 2.62.95 0 1.72-.46 1.94-1.48h2.46Zm-2.56-2.9c-.08-1.24-.95-2.24-2.16-2.24-1.28 0-2.04.96-2.12 2.24h4.28Z" />
-              </svg>
-            </a>
-          </div>
+        <div class="site-nav-tools" aria-label="Quick actions">
+          <a href="https://linkedin.com/in/yourname" class="nav-social-link" data-hover aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
+              <path d="M6.94 8.5H3.56V20h3.38V8.5ZM5.25 3A2 2 0 1 0 5.3 7a2 2 0 0 0-.05-4ZM20 20h-3.37v-5.6c0-1.34-.03-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.22V8.5h3.24v1.57h.05c.45-.85 1.56-1.75 3.2-1.75 3.42 0 4.05 2.25 4.05 5.18V20Z" />
+            </svg>
+          </a>
+          <a href="https://www.behance.net/yourname" class="nav-social-link" data-hover aria-label="Behance">
+            <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
+              <path d="M3.5 6.5H9c2.2 0 3.75 1.1 3.75 3.05 0 1.2-.56 2.1-1.62 2.58 1.42.38 2.18 1.54 2.18 3.05 0 2.44-2.07 3.52-4.25 3.52H3.5V6.5Zm2.7 4.92h2.4c.84 0 1.46-.38 1.46-1.3 0-1.04-.8-1.26-1.67-1.26H6.2v2.56Zm0 5h2.53c.93 0 1.74-.3 1.74-1.42 0-1.1-.7-1.54-1.72-1.54H6.2v2.96Zm9.72-5.8h4.58v1.35h-4.58v-1.35Zm4.66 4.56c-.24 2.34-2.15 3.82-4.48 3.82-3.34 0-4.92-2.3-5.02-5.5 0-3.14 2.06-5.44 4.92-5.44 3.7 0 4.84 3.46 4.66 5.98h-6.7c-.08 1.56.84 2.62 2.22 2.62.95 0 1.72-.46 1.94-1.48h2.46Zm-2.56-2.9c-.08-1.24-.95-2.24-2.16-2.24-1.28 0-2.04.96-2.12 2.24h4.28Z" />
+            </svg>
+          </a>
           <button type="button" class="theme-toggle" data-hover data-theme-toggle title="${state.dark ? "Switch to light mode" : "Switch to dark mode"}">
             <span class="theme-toggle-icon" aria-hidden="true">
               ${state.dark
@@ -618,6 +666,18 @@
             <span class="theme-toggle-label sr-only">${state.dark ? "Light mode" : "Dark mode"}</span>
           </button>
         </div>
+        <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>Medha Singh</button>
+        <div class="site-nav-links">
+          <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
+            <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work v</button>
+            <div class="nav-dropdown">
+              <button type="button" class="nav-dropdown-button nav-dropdown-button-bordered" data-hover data-nav-page="ux">UX Design</button>
+              <button type="button" class="nav-dropdown-button" data-hover data-nav-page="graphic">Graphic Design</button>
+            </div>
+          </div>
+          <button type="button" class="nav-button" data-hover data-nav-about>About</button>
+          <button type="button" class="nav-button" data-hover data-contact-open>Contact</button>
+        </div>
       </nav>
     `;
   }
@@ -625,8 +685,15 @@
   function renderFooter() {
     return `
       <footer class="site-footer">
-        <p class="site-footer-copy">(c) 2026 Medha Singh</p>
-        <p class="site-footer-copy">Designed & coded with intention</p>
+        <div class="site-footer-meta">
+          <p class="site-footer-copy">(c) 2026 Medha Singh</p>
+          <p class="site-footer-copy">Designed & coded with intention</p>
+        </div>
+        <div class="site-footer-links" aria-label="Social links">
+          ${window.portfolioData.SOCIAL_LINKS.map(
+            ([label, href]) => `<a href="${escapeHtml(href)}" class="site-footer-link" data-hover>${escapeHtml(label)}</a>`
+          ).join("")}
+        </div>
       </footer>
     `;
   }
@@ -638,6 +705,7 @@
         <main>${renderMain(state)}</main>
         ${renderFooter()}
         ${renderContactModal(state)}
+        ${renderImageLightbox(state)}
         <div class="dynaspot" data-dynaspot aria-hidden="true">
           <div class="dynaspot-ring"></div>
           <div class="dynaspot-dot"></div>

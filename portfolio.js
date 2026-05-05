@@ -3,6 +3,12 @@ const state = {
   activeProjectId: null,
   projectReturnPage: "home",
   contactOpen: false,
+  lightboxOpen: false,
+  lightboxSrc: "",
+  lightboxAlt: "",
+  lightboxZoom: 1,
+  lightboxPanX: 0,
+  lightboxPanY: 0,
   dark: false,
   workMenuOpen: false,
   activeBioChipId: null,
@@ -12,6 +18,7 @@ const state = {
 
 const app = document.getElementById("app");
 let dragState = null;
+let lightboxDragState = null;
 let typeRevealObserver = null;
 let bioTypeTimer = null;
 let dynaspot = null;
@@ -94,6 +101,12 @@ function handleProjectOpen(projectId) {
   state.projectReturnPage = state.page === "ux" || state.page === "graphic" ? state.page : "home";
   state.page = "project";
   state.contactOpen = false;
+  state.lightboxOpen = false;
+  state.lightboxSrc = "";
+  state.lightboxAlt = "";
+  state.lightboxZoom = 1;
+  state.lightboxPanX = 0;
+  state.lightboxPanY = 0;
   render();
   window.scrollTo(0, 0);
 }
@@ -102,12 +115,76 @@ function handlePageChange(page) {
   state.page = page;
   state.activeProjectId = null;
   state.contactOpen = false;
+  state.lightboxOpen = false;
+  state.lightboxSrc = "";
+  state.lightboxAlt = "";
+  state.lightboxZoom = 1;
+  state.lightboxPanX = 0;
+  state.lightboxPanY = 0;
   state.workMenuOpen = false;
   clearBioTypeTimer();
   state.activeBioChipId = null;
   state.bioTypedText = "";
   render();
   window.scrollTo(0, 0);
+}
+
+function scrollToWorkSection() {
+  if (state.page !== "home") {
+    handlePageChange("home");
+    requestAnimationFrame(() => {
+      window.portfolioStack?.scrollToWorkSection();
+    });
+    return;
+  }
+
+  window.portfolioStack?.scrollToWorkSection();
+}
+
+function openImageLightbox(src, alt) {
+  setState({
+    lightboxOpen: true,
+    lightboxSrc: src,
+    lightboxAlt: alt || "",
+    lightboxZoom: 1,
+    lightboxPanX: 0,
+    lightboxPanY: 0,
+  });
+}
+
+function closeImageLightbox() {
+  if (!state.lightboxOpen) return;
+
+  setState({
+    lightboxOpen: false,
+    lightboxSrc: "",
+    lightboxAlt: "",
+    lightboxZoom: 1,
+    lightboxPanX: 0,
+    lightboxPanY: 0,
+  });
+}
+
+function setLightboxZoom(nextZoom) {
+  if (!state.lightboxOpen) return;
+  const clampedZoom = Math.max(0.5, Math.min(3, nextZoom));
+  const nextState = { lightboxZoom: clampedZoom };
+
+  if (clampedZoom <= 1) {
+    nextState.lightboxPanX = 0;
+    nextState.lightboxPanY = 0;
+  }
+
+  setState(nextState);
+}
+
+function setLightboxPan(nextPanX, nextPanY) {
+  if (!state.lightboxOpen) return;
+
+  setState({
+    lightboxPanX: nextPanX,
+    lightboxPanY: nextPanY,
+  });
 }
 
 function initializeTypeReveal() {
@@ -192,6 +269,10 @@ function attachEvents() {
     button.addEventListener("click", () => handlePageChange(button.dataset.navPage));
   });
 
+  document.querySelectorAll("[data-hero-work]").forEach((button) => {
+    button.addEventListener("click", scrollToWorkSection);
+  });
+
   document.querySelectorAll("[data-bio-chip]").forEach((chip) => {
     chip.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -213,6 +294,13 @@ function attachEvents() {
 
   document.querySelectorAll("[data-nav-back]").forEach((button) => {
     button.addEventListener("click", () => handlePageChange(state.projectReturnPage || "home"));
+  });
+
+  document.querySelectorAll("[data-lightbox-image]").forEach((image) => {
+    image.addEventListener("click", (event) => {
+      event.stopPropagation();
+      openImageLightbox(image.dataset.lightboxSrc, image.dataset.lightboxAlt);
+    });
   });
 
   const aboutButton = document.querySelector("[data-nav-about]");
@@ -251,6 +339,30 @@ function attachEvents() {
   const themeToggle = document.querySelector("[data-theme-toggle]");
   if (themeToggle) {
     themeToggle.addEventListener("click", () => setState({ dark: !state.dark }));
+  }
+
+  const lightboxBackdrop = document.querySelector("[data-lightbox-backdrop]");
+  if (lightboxBackdrop) {
+    lightboxBackdrop.addEventListener("click", (event) => {
+      if (event.target === lightboxBackdrop) {
+        closeImageLightbox();
+      }
+    });
+  }
+
+  const lightboxClose = document.querySelector("[data-lightbox-close]");
+  if (lightboxClose) {
+    lightboxClose.addEventListener("click", closeImageLightbox);
+  }
+
+  const lightboxZoomIn = document.querySelector("[data-lightbox-zoom-in]");
+  if (lightboxZoomIn) {
+    lightboxZoomIn.addEventListener("click", () => setLightboxZoom((state.lightboxZoom || 1) + 0.2));
+  }
+
+  const lightboxZoomOut = document.querySelector("[data-lightbox-zoom-out]");
+  if (lightboxZoomOut) {
+    lightboxZoomOut.addEventListener("click", () => setLightboxZoom((state.lightboxZoom || 1) - 0.2));
   }
 
   const skillsCanvas = document.querySelector("[data-skills-canvas]");
@@ -333,6 +445,14 @@ function attachGlobalEvents() {
   });
 
   window.addEventListener("mousemove", (event) => {
+    if (lightboxDragState) {
+      event.preventDefault();
+      const nextPanX = lightboxDragState.startPanX + (event.clientX - lightboxDragState.startX);
+      const nextPanY = lightboxDragState.startPanY + (event.clientY - lightboxDragState.startY);
+      setLightboxPan(nextPanX, nextPanY);
+      return;
+    }
+
     if (!dragState) return;
 
     const dx = ((event.clientX - dragState.startMouseX) / dragState.width) * 100;
@@ -354,10 +474,33 @@ function attachGlobalEvents() {
 
   window.addEventListener("mouseup", () => {
     dragState = null;
+    lightboxDragState = null;
+  });
+
+  document.addEventListener("mousedown", (event) => {
+    const stage = event.target.closest("[data-lightbox-stage]");
+    if (!stage || !state.lightboxOpen || (state.lightboxZoom || 1) <= 1) return;
+
+    event.preventDefault();
+    lightboxDragState = {
+      startX: event.clientX,
+      startY: event.clientY,
+      startPanX: state.lightboxPanX || 0,
+      startPanY: state.lightboxPanY || 0,
+    };
   });
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      if (state.lightboxOpen) {
+        if ((state.lightboxZoom || 1) > 1 || state.lightboxPanX || state.lightboxPanY) {
+          setState({ lightboxZoom: 1, lightboxPanX: 0, lightboxPanY: 0 });
+        } else {
+          closeImageLightbox();
+        }
+        return;
+      }
+
       if (state.contactOpen) {
         setState({ contactOpen: false });
         return;
@@ -384,6 +527,17 @@ function attachGlobalEvents() {
       collapseBioChip();
     }
   });
+
+  document.addEventListener(
+    "wheel",
+    (event) => {
+      if (!state.lightboxOpen || !event.target.closest("[data-lightbox-stage]")) return;
+      event.preventDefault();
+      const delta = event.deltaY > 0 ? -0.12 : 0.12;
+      setLightboxZoom((state.lightboxZoom || 1) + delta);
+    },
+    { passive: false }
+  );
 }
 
 function render() {

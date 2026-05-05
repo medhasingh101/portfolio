@@ -99,6 +99,19 @@
     });
   }
 
+  function scrollToWorkSection() {
+    const { sequence } = getElements();
+
+    if (!sequence) return;
+
+    const { topOffset } = getMetrics(sequence);
+
+    window.scrollTo({
+      top: Math.max(0, sequence.offsetTop - topOffset),
+      behavior: "smooth",
+    });
+  }
+
   function initialize() {
     sync();
 
@@ -111,6 +124,7 @@
 
   window.portfolioStack = {
     initialize,
+    scrollToWorkSection,
     scrollToAboutSection,
     sync,
   };

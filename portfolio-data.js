@@ -145,29 +145,47 @@
     ["Resume", "Download PDF", "#"],
   ];
 
+  const SOCIAL_LINKS = [
+    ["LinkedIn", "https://linkedin.com/in/yourname"],
+    ["Behance", "https://www.behance.net/yourname"],
+  ];
+
+  const HERO_EYEBROW = "Product Designer / Amsterdam / EU Citizen / Open to Relocation";
+
+  const HERO_LETTER_LINES = [
+    "Hi, I'm Medha -",
+    "I design digital products that make complex things feel simple.",
+  ];
+
+  const HERO_PROOF_POINTS = [
+    "3 real-world research studies",
+    "2 industry clients",
+    "Graduating June 2025",
+  ];
+
   const BIO_INTRO_ITEMS = [
-    { type: "text", value: "I design products with roots in" },
-    {
-      type: "chip",
-      id: "systems",
-      label: "design systems",
-      detail: "building resilient UI foundations that help teams move faster without sacrificing clarity.",
-    },
-    { type: "text", value: "and a practice shaped by" },
+    { type: "text", value: "I design products at the intersection of" },
     {
       type: "chip",
       id: "research",
       label: "user research",
-      detail: "turning interviews, testing, and observation into sharper product decisions.",
+      detail: "grounding product decisions in interviews, observation, testing, and what people actually need.",
     },
-    { type: "text", value: "with a love for" },
+    { type: "text", value: "," },
     {
       type: "chip",
-      id: "motion",
-      label: "motion design",
-      detail: "using movement to guide attention, explain hierarchy, and make interfaces feel alive.",
+      id: "ai",
+      label: "AI experiences",
+      detail: "shaping AI features that feel understandable, trustworthy, and useful in real workflows.",
     },
-    { type: "text", value: "across digital experiences." },
+    { type: "text", value: ", and" },
+    {
+      type: "chip",
+      id: "systems",
+      label: "design systems",
+      detail: "building scalable UI foundations that help teams move faster without sacrificing clarity.",
+    },
+    { type: "text", value: "- currently finishing my degree at [University]." },
   ];
 
   window.portfolioData = {
@@ -175,6 +193,10 @@
     INITIAL_SKILLS,
     DARK_CARD_COLORS,
     CONTACT_LINKS,
+    SOCIAL_LINKS,
+    HERO_EYEBROW,
+    HERO_LETTER_LINES,
+    HERO_PROOF_POINTS,
     BIO_INTRO_ITEMS,
   };
 })();
