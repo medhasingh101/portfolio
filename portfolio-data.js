@@ -160,32 +160,37 @@
   const HERO_PROOF_POINTS = [
     "3 real-world research studies",
     "2 industry clients",
-    "Graduating June 2025",
+    "Graduated June 2025",
   ];
 
   const BIO_INTRO_ITEMS = [
-    { type: "text", value: "I design products at the intersection of" },
+    { type: "text", value: "I design products at the intersection of " },
     {
       type: "chip",
       id: "research",
       label: "user research",
       detail: "grounding product decisions in interviews, observation, testing, and what people actually need.",
     },
-    { type: "text", value: "," },
+    { type: "text", value: ", " },
     {
       type: "chip",
       id: "ai",
       label: "AI experiences",
       detail: "shaping AI features that feel understandable, trustworthy, and useful in real workflows.",
     },
-    { type: "text", value: ", and" },
+    { type: "text", value: ", and " },
     {
       type: "chip",
       id: "systems",
       label: "design systems",
       detail: "building scalable UI foundations that help teams move faster without sacrificing clarity.",
     },
-    { type: "text", value: "- currently finishing my degree at [University]." },
+    { type: "text", value: " — recently graduated from [University]." },
+  ];
+
+  const BIO_ABOUT = [
+    "Hi, I'm Medha Singh — a product designer and HCI graduate focused on interaction design, AI-driven experiences, and design systems.",
+    "I'm most at home in the messy middle, turning fuzzy problems into clear, elegant solutions.",
   ];
 
   window.portfolioData = {
@@ -198,5 +203,6 @@
     HERO_LETTER_LINES,
     HERO_PROOF_POINTS,
     BIO_INTRO_ITEMS,
+    BIO_ABOUT,
   };
 })();

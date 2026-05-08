@@ -85,13 +85,16 @@
   }
 
   function animateIdle(now) {
-    if (currentScene) {
-      const isIdle = currentProgress <= 0.01;
-      const pulse = isIdle ? (Math.sin(now / 520) + 1) / 2 : 0;
-
-      currentScene.style.setProperty("--envelope-idle-pulse", pulse.toFixed(4));
-      currentScene.classList.toggle("is-idle", isIdle);
+    if (!currentScene || !currentScene.isConnected) {
+      idleAnimationFrame = null;
+      return;
     }
+
+    const isIdle = currentProgress <= 0.01;
+    const pulse = isIdle ? (Math.sin(now / 520) + 1) / 2 : 0;
+
+    currentScene.style.setProperty("--envelope-idle-pulse", pulse.toFixed(4));
+    currentScene.classList.toggle("is-idle", isIdle);
 
     idleAnimationFrame = window.requestAnimationFrame(animateIdle);
   }
@@ -149,7 +152,7 @@
     window.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);
 
-    if (!idleAnimationFrame) {
+    if (!idleAnimationFrame && currentScene) {
       idleAnimationFrame = window.requestAnimationFrame(animateIdle);
     }
   }

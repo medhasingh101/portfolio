@@ -33,9 +33,137 @@ const dynaspotState = {
   y: 0,
 };
 
+function syncLightboxTransform() {
+  const img = document.querySelector(".image-lightbox-image");
+  if (img) {
+    img.style.transform = `translate(${state.lightboxPanX}px, ${state.lightboxPanY}px) scale(${state.lightboxZoom})`;
+  }
+  const zoomLabel = document.querySelector(".image-lightbox-zoom-label");
+  if (zoomLabel) {
+    const pct = Math.round(state.lightboxZoom * 100);
+    const hint = state.lightboxZoom > 1 ? ` <span class="image-lightbox-hint">drag to explore</span>` : "";
+    zoomLabel.innerHTML = `${pct}%${hint}`;
+  }
+}
+
+function applyThemeChange() {
+  const shell = document.querySelector(".app-shell");
+  if (!shell) return false;
+  shell.classList.toggle("theme-dark", state.dark);
+  shell.classList.toggle("theme-light", !state.dark);
+
+  document.querySelectorAll("[data-project-id]").forEach((card) => {
+    const project = window.portfolioData.PROJECTS.find((p) => p.id === Number(card.dataset.projectId));
+    if (!project) return;
+    card.style.background = state.dark
+      ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614"
+      : project.cardBackgroundLight || "#eaf0f8";
+  });
+
+  const toggle = document.querySelector("[data-theme-toggle]");
+  if (toggle) {
+    toggle.title = state.dark ? "Switch to light mode" : "Switch to dark mode";
+    const label = toggle.querySelector(".theme-toggle-label");
+    if (label) label.textContent = state.dark ? "Light mode" : "Dark mode";
+    const icon = toggle.querySelector(".theme-toggle-icon");
+    if (icon) {
+      icon.innerHTML = state.dark
+        ? `<svg viewBox="0 0 24 24" class="theme-toggle-svg" focusable="false"><path d="M12 4.75V2.5M12 21.5v-2.25M6.88 6.88 5.3 5.3M18.7 18.7l-1.58-1.58M4.75 12H2.5M21.5 12h-2.25M6.88 17.12 5.3 18.7M18.7 5.3l-1.58 1.58M12 16.25A4.25 4.25 0 1 0 12 7.75a4.25 4.25 0 0 0 0 8.5Z" /></svg>`
+        : `<svg viewBox="0 0 24 24" class="theme-toggle-svg" focusable="false"><path d="M20.2 14.85A8.75 8.75 0 0 1 9.15 3.8a8.75 8.75 0 1 0 11.05 11.05Z" /></svg>`;
+    }
+  }
+  return true;
+}
+
+function applyWorkMenuChange() {
+  const wrap = document.querySelector("[data-work-wrap]");
+  if (!wrap) return false;
+  wrap.classList.toggle("is-open", state.workMenuOpen);
+  const toggle = wrap.querySelector("[data-work-toggle]");
+  if (toggle) toggle.setAttribute("aria-expanded", String(state.workMenuOpen));
+  return true;
+}
+
+function attachContactEvents(backdrop) {
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) setState({ contactOpen: false });
+  });
+  backdrop.querySelector("[data-contact-close]")?.addEventListener("click", () => setState({ contactOpen: false }));
+}
+
+function applyContactModal() {
+  const existing = document.querySelector("[data-contact-backdrop]");
+  if (state.contactOpen) {
+    if (existing) return;
+    const html = window.portfolioRender.buildContactModal(state);
+    if (!html) return;
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const modal = div.firstElementChild;
+    if (!modal) return;
+    const shell = document.querySelector(".app-shell");
+    if (shell) {
+      shell.insertBefore(modal, document.querySelector("[data-dynaspot]") || null);
+      attachContactEvents(modal);
+    }
+  } else {
+    existing?.remove();
+  }
+}
+
+function attachLightboxEvents(backdrop) {
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) closeImageLightbox();
+  });
+  backdrop.querySelector("[data-lightbox-close]")?.addEventListener("click", closeImageLightbox);
+  backdrop.querySelector("[data-lightbox-zoom-in]")?.addEventListener("click", () => setLightboxZoom(state.lightboxZoom + 0.2));
+  backdrop.querySelector("[data-lightbox-zoom-out]")?.addEventListener("click", () => setLightboxZoom(state.lightboxZoom - 0.2));
+}
+
+function applyLightboxModal() {
+  const existing = document.querySelector("[data-lightbox-backdrop]");
+  if (state.lightboxOpen && state.lightboxSrc) {
+    if (existing) {
+      syncLightboxTransform();
+    } else {
+      const html = window.portfolioRender.buildImageLightbox(state);
+      if (!html) return;
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      const lightbox = div.firstElementChild;
+      if (!lightbox) return;
+      const shell = document.querySelector(".app-shell");
+      if (shell) {
+        shell.insertBefore(lightbox, document.querySelector("[data-dynaspot]") || null);
+        attachLightboxEvents(lightbox);
+      }
+    }
+  } else {
+    existing?.remove();
+  }
+}
+
+const TARGETED_UPDATE_SETS = [
+  { keys: new Set(["dark"]), apply: () => applyThemeChange() },
+  { keys: new Set(["workMenuOpen"]), apply: () => applyWorkMenuChange() },
+  { keys: new Set(["contactOpen"]), apply: () => applyContactModal() },
+  {
+    keys: new Set(["lightboxOpen", "lightboxSrc", "lightboxAlt", "lightboxZoom", "lightboxPanX", "lightboxPanY"]),
+    apply: () => applyLightboxModal(),
+  },
+];
+
 function setState(nextState) {
   Object.assign(state, nextState);
-  render();
+  const changedKeys = new Set(Object.keys(nextState));
+  const targeted = TARGETED_UPDATE_SETS.find((entry) =>
+    [...changedKeys].every((k) => entry.keys.has(k))
+  );
+  if (targeted) {
+    targeted.apply();
+  } else {
+    render();
+  }
 }
 
 function clearBioTypeTimer() {
@@ -107,6 +235,7 @@ function handleProjectOpen(projectId) {
   state.lightboxZoom = 1;
   state.lightboxPanX = 0;
   state.lightboxPanY = 0;
+  state.workMenuOpen = false;
   render();
   window.scrollTo(0, 0);
 }
@@ -133,7 +262,9 @@ function scrollToWorkSection() {
   if (state.page !== "home") {
     handlePageChange("home");
     requestAnimationFrame(() => {
-      window.portfolioStack?.scrollToWorkSection();
+      requestAnimationFrame(() => {
+        window.portfolioStack?.scrollToWorkSection();
+      });
     });
     return;
   }
@@ -167,24 +298,19 @@ function closeImageLightbox() {
 
 function setLightboxZoom(nextZoom) {
   if (!state.lightboxOpen) return;
-  const clampedZoom = Math.max(0.5, Math.min(3, nextZoom));
-  const nextState = { lightboxZoom: clampedZoom };
-
-  if (clampedZoom <= 1) {
-    nextState.lightboxPanX = 0;
-    nextState.lightboxPanY = 0;
+  state.lightboxZoom = Math.max(0.5, Math.min(3, nextZoom));
+  if (state.lightboxZoom <= 1) {
+    state.lightboxPanX = 0;
+    state.lightboxPanY = 0;
   }
-
-  setState(nextState);
+  syncLightboxTransform();
 }
 
 function setLightboxPan(nextPanX, nextPanY) {
   if (!state.lightboxOpen) return;
-
-  setState({
-    lightboxPanX: nextPanX,
-    lightboxPanY: nextPanY,
-  });
+  state.lightboxPanX = nextPanX;
+  state.lightboxPanY = nextPanY;
+  syncLightboxTransform();
 }
 
 function initializeTypeReveal() {
@@ -368,22 +494,31 @@ function attachEvents() {
   const skillsCanvas = document.querySelector("[data-skills-canvas]");
   if (skillsCanvas) {
     document.querySelectorAll("[data-skill-handle]").forEach((handle) => {
-      handle.addEventListener("mousedown", (event) => {
-        event.preventDefault();
+      const startDrag = (clientX, clientY) => {
         const rect = skillsCanvas.getBoundingClientRect();
         const skill = state.skills.find((item) => item.id === handle.dataset.skillHandle);
         if (!skill) return;
-
         dragState = {
           id: skill.id,
-          startMouseX: event.clientX,
-          startMouseY: event.clientY,
+          startMouseX: clientX,
+          startMouseY: clientY,
           startPx: skill.px,
           startPy: skill.py,
           width: rect.width,
           height: rect.height,
         };
+      };
+
+      handle.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        startDrag(event.clientX, event.clientY);
       });
+
+      handle.addEventListener("touchstart", (event) => {
+        event.preventDefault();
+        const touch = event.touches[0];
+        startDrag(touch.clientX, touch.clientY);
+      }, { passive: false });
     });
   }
 
@@ -477,24 +612,69 @@ function attachGlobalEvents() {
     lightboxDragState = null;
   });
 
-  document.addEventListener("mousedown", (event) => {
-    const stage = event.target.closest("[data-lightbox-stage]");
-    if (!stage || !state.lightboxOpen || (state.lightboxZoom || 1) <= 1) return;
+  window.addEventListener("touchend", () => {
+    dragState = null;
+    lightboxDragState = null;
+  });
 
+  window.addEventListener("touchmove", (event) => {
+    const touch = event.touches[0];
+
+    if (lightboxDragState) {
+      event.preventDefault();
+      const nextPanX = lightboxDragState.startPanX + (touch.clientX - lightboxDragState.startX);
+      const nextPanY = lightboxDragState.startPanY + (touch.clientY - lightboxDragState.startY);
+      setLightboxPan(nextPanX, nextPanY);
+      return;
+    }
+
+    if (!dragState) return;
+    event.preventDefault();
+
+    const dx = ((touch.clientX - dragState.startMouseX) / dragState.width) * 100;
+    const dy = ((touch.clientY - dragState.startMouseY) / dragState.height) * 100;
+    const nextX = Math.max(5, Math.min(95, dragState.startPx + dx));
+    const nextY = Math.max(5, Math.min(95, dragState.startPy + dy));
+    const skill = state.skills.find((item) => item.id === dragState.id);
+    if (!skill) return;
+
+    skill.px = nextX;
+    skill.py = nextY;
+
+    const node = document.querySelector(`[data-skill-id="${dragState.id}"]`);
+    if (node) {
+      node.style.left = `${nextX}%`;
+      node.style.top = `${nextY}%`;
+    }
+  }, { passive: false });
+
+  const startLightboxDrag = (clientX, clientY, event) => {
+    const stage = event.target.closest("[data-lightbox-stage]");
+    if (!stage || !state.lightboxOpen || state.lightboxZoom <= 1) return;
     event.preventDefault();
     lightboxDragState = {
-      startX: event.clientX,
-      startY: event.clientY,
-      startPanX: state.lightboxPanX || 0,
-      startPanY: state.lightboxPanY || 0,
+      startX: clientX,
+      startY: clientY,
+      startPanX: state.lightboxPanX,
+      startPanY: state.lightboxPanY,
     };
-  });
+  };
+
+  document.addEventListener("mousedown", (event) => startLightboxDrag(event.clientX, event.clientY, event));
+
+  document.addEventListener("touchstart", (event) => {
+    const touch = event.touches[0];
+    startLightboxDrag(touch.clientX, touch.clientY, event);
+  }, { passive: false });
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       if (state.lightboxOpen) {
-        if ((state.lightboxZoom || 1) > 1 || state.lightboxPanX || state.lightboxPanY) {
-          setState({ lightboxZoom: 1, lightboxPanX: 0, lightboxPanY: 0 });
+        if (state.lightboxZoom > 1 || state.lightboxPanX || state.lightboxPanY) {
+          state.lightboxZoom = 1;
+          state.lightboxPanX = 0;
+          state.lightboxPanY = 0;
+          syncLightboxTransform();
         } else {
           closeImageLightbox();
         }

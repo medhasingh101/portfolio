@@ -15,6 +15,14 @@
       .replace(/^-+|-+$/g, "");
   }
 
+  function socialIcon(label) {
+    const icons = {
+      LinkedIn: `<svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false"><path d="M6.94 8.5H3.56V20h3.38V8.5ZM5.25 3A2 2 0 1 0 5.3 7a2 2 0 0 0-.05-4ZM20 20h-3.37v-5.6c0-1.34-.03-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.22V8.5h3.24v1.57h.05c.45-.85 1.56-1.75 3.2-1.75 3.42 0 4.05 2.25 4.05 5.18V20Z" /></svg>`,
+      Behance: `<svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false"><path d="M3.5 6.5H9c2.2 0 3.75 1.1 3.75 3.05 0 1.2-.56 2.1-1.62 2.58 1.42.38 2.18 1.54 2.18 3.05 0 2.44-2.07 3.52-4.25 3.52H3.5V6.5Zm2.7 4.92h2.4c.84 0 1.46-.38 1.46-1.3 0-1.04-.8-1.26-1.67-1.26H6.2v2.56Zm0 5h2.53c.93 0 1.74-.3 1.74-1.42 0-1.1-.7-1.54-1.72-1.54H6.2v2.96Zm9.72-5.8h4.58v1.35h-4.58v-1.35Zm4.66 4.56c-.24 2.34-2.15 3.82-4.48 3.82-3.34 0-4.92-2.3-5.02-5.5 0-3.14 2.06-5.44 4.92-5.44 3.7 0 4.84 3.46 4.66 5.98h-6.7c-.08 1.56.84 2.62 2.22 2.62.95 0 1.72-.46 1.94-1.48h2.46Zm-2.56-2.9c-.08-1.24-.95-2.24-2.16-2.24-1.28 0-2.04.96-2.12 2.24h4.28Z" /></svg>`,
+    };
+    return icons[label] || escapeHtml(label);
+  }
+
   function getActiveProject(state) {
     return window.portfolioData.PROJECTS.find((project) => project.id === state.activeProjectId) ?? null;
   }
@@ -161,7 +169,7 @@
   function renderProjectSidebar(sections) {
     return `
       <aside class="detail-sidebar">
-        <button type="button" class="button-ghost detail-back" data-hover data-nav-back>&lt;- Back</button>
+        <button type="button" class="button-ghost detail-back" data-hover data-nav-back>&#8592; Back</button>
         <nav class="detail-toc" aria-label="Case study sections">
           ${sections
             .map(
@@ -393,7 +401,7 @@
   }
 
   function renderBioIntro(state) {
-    return window.portfolioData.BIO_INTRO_ITEMS.map((item) => renderBioIntroItem(item, state)).join(" ");
+    return window.portfolioData.BIO_INTRO_ITEMS.map((item) => renderBioIntroItem(item, state)).join("");
   }
 
   function renderHeroLetter() {
@@ -439,7 +447,13 @@
                       </p>
                     </div>
                     <div class="hero-actions">
-                      <button type="button" class="hero-cta" data-hover data-hero-work>See my work -&gt;</button>
+                      <div class="hero-clip-note">
+                        <svg class="hero-clip-svg" width="30" height="58" viewBox="0 0 30 58" fill="none" aria-hidden="true">
+                          <path d="M 30,3 H 10 C 0,3 0,55 10,55 H 30" stroke="#9a8a66" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                          <path d="M 52,26 C 61,26 61,14 52,14 H 19 C 11,14 11,44 19,44 H 30" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                        <button type="button" class="hero-cta" data-hover data-hero-work>See my work &#x2192;</button>
+                      </div>
                     </div>
                   </div>
                   <div class="hero-stats" aria-label="Experience highlights">
@@ -486,12 +500,11 @@
                   </div>
                   <div>
                     ${typeReveal("I design with clarity and intention", "h2", "about-title", 80)}
-                    <p class="about-copy about-copy-spaced">
-                      Hi, I'm Medha Singh, a product designer with 5+ years working across fintech, health, and SaaS. I believe great design lives at the intersection of deep user empathy and sharp business thinking.
-                    </p>
-                    <p class="about-copy">
-                      I'm most at home in the messy middle, turning fuzzy problems into clear, elegant solutions.
-                    </p>
+                    ${window.portfolioData.BIO_ABOUT.map((para, i) => `
+                      <p class="about-copy${i < window.portfolioData.BIO_ABOUT.length - 1 ? " about-copy-spaced" : ""}">
+                        ${escapeHtml(para)}
+                      </p>
+                    `).join("")}
                   </div>
                 </div>
               </div>
@@ -639,16 +652,11 @@
     return `
       <nav class="site-nav">
         <div class="site-nav-tools" aria-label="Quick actions">
-          <a href="https://linkedin.com/in/yourname" class="nav-social-link" data-hover aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
-              <path d="M6.94 8.5H3.56V20h3.38V8.5ZM5.25 3A2 2 0 1 0 5.3 7a2 2 0 0 0-.05-4ZM20 20h-3.37v-5.6c0-1.34-.03-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V20H9.22V8.5h3.24v1.57h.05c.45-.85 1.56-1.75 3.2-1.75 3.42 0 4.05 2.25 4.05 5.18V20Z" />
-            </svg>
-          </a>
-          <a href="https://www.behance.net/yourname" class="nav-social-link" data-hover aria-label="Behance">
-            <svg viewBox="0 0 24 24" class="nav-social-svg" focusable="false">
-              <path d="M3.5 6.5H9c2.2 0 3.75 1.1 3.75 3.05 0 1.2-.56 2.1-1.62 2.58 1.42.38 2.18 1.54 2.18 3.05 0 2.44-2.07 3.52-4.25 3.52H3.5V6.5Zm2.7 4.92h2.4c.84 0 1.46-.38 1.46-1.3 0-1.04-.8-1.26-1.67-1.26H6.2v2.56Zm0 5h2.53c.93 0 1.74-.3 1.74-1.42 0-1.1-.7-1.54-1.72-1.54H6.2v2.96Zm9.72-5.8h4.58v1.35h-4.58v-1.35Zm4.66 4.56c-.24 2.34-2.15 3.82-4.48 3.82-3.34 0-4.92-2.3-5.02-5.5 0-3.14 2.06-5.44 4.92-5.44 3.7 0 4.84 3.46 4.66 5.98h-6.7c-.08 1.56.84 2.62 2.22 2.62.95 0 1.72-.46 1.94-1.48h2.46Zm-2.56-2.9c-.08-1.24-.95-2.24-2.16-2.24-1.28 0-2.04.96-2.12 2.24h4.28Z" />
-            </svg>
-          </a>
+          ${window.portfolioData.SOCIAL_LINKS.map(([label, href]) => `
+            <a href="${escapeHtml(href)}" class="nav-social-link" data-hover aria-label="${escapeHtml(label)}">
+              ${socialIcon(label)}
+            </a>
+          `).join("")}
           <button type="button" class="theme-toggle" data-hover data-theme-toggle title="${state.dark ? "Switch to light mode" : "Switch to dark mode"}">
             <span class="theme-toggle-icon" aria-hidden="true">
               ${state.dark
@@ -669,7 +677,7 @@
         <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>Medha Singh</button>
         <div class="site-nav-links">
           <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
-            <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work v</button>
+            <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work &#9662;</button>
             <div class="nav-dropdown">
               <button type="button" class="nav-dropdown-button nav-dropdown-button-bordered" data-hover data-nav-page="ux">UX Design</button>
               <button type="button" class="nav-dropdown-button" data-hover data-nav-page="graphic">Graphic Design</button>
@@ -717,5 +725,7 @@
   window.portfolioRender = {
     buildAppMarkup,
     getActiveProject,
+    buildContactModal: renderContactModal,
+    buildImageLightbox: renderImageLightbox,
   };
 })();
