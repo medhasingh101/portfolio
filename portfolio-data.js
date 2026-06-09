@@ -8,6 +8,7 @@
       subtitle: "SaaS / 2023",
       desc: "Built a scalable component library from scratch for a B2B SaaS product. Cut design-to-dev handoff time by 60%.",
       tags: ["UX Design", "Graphic Design"],
+      methods: "Component Library, Design Tokens, Figma Variables, Documentation, Stakeholder Alignment",
       color: "#e4ede9",
       full: {
         overview:
@@ -37,6 +38,7 @@
       subtitle: "Mobile / 2023",
       desc: "Led product design for a health-tracking app from concept to App Store launch. 4.8-star rating, featured by Apple.",
       tags: ["UX Design"],
+      methods: "User Research, iOS Design, Figma, Usability Testing, Product Strategy",
       color: "#ebe4ed",
       full: {
         overview:
@@ -66,6 +68,7 @@
       subtitle: "Branding / 2024",
       desc: "Full visual identity for a DTC food brand: logo, type, packaging, and guidelines. Launched across four markets.",
       tags: ["Graphic Design"],
+      methods: "Logo Design, Typography, Colour, Packaging, Brand Guidelines, Adobe Suite",
       color: "#ede9e0",
       full: {
         overview:
@@ -95,6 +98,7 @@
       subtitle: "Motion / 2024",
       desc: "Animated brand system for a web3 gaming community: logo reveals, UI transitions, and social content.",
       tags: ["Graphic Design"],
+      methods: "After Effects, Lottie, Motion Design, Brand Strategy, Social Templates",
       color: "#e0e4ed",
       full: {
         overview: "Motion-first rebrand for a web3 gaming community with 80k members.",
@@ -150,47 +154,60 @@
     ["Behance", "https://www.behance.net/yourname"],
   ];
 
-  const HERO_EYEBROW = "Product Designer / Amsterdam / EU Citizen / Open to Relocation";
+  const HERO_EYEBROW = "Product Designer / Vancouver / Working Worldwide";
 
   const HERO_LETTER_LINES = [
-    "Hi, I'm Medha -",
-    "I design digital products that make complex things feel simple.",
+    "Hi, I'm Medha",
+    "a Product and User Experience Designer with academic foundations in human cognition and computer science. I work across areas of user research, interaction design, and web design.",
   ];
 
   const HERO_PROOF_POINTS = [
     "3 real-world research studies",
     "2 industry clients",
-    "Graduated June 2025",
   ];
 
   const BIO_INTRO_ITEMS = [
-    { type: "text", value: "I design products at the intersection of " },
+    { type: "text", value: "I work across areas of " },
     {
       type: "chip",
       id: "research",
       label: "user research",
       detail: "grounding product decisions in interviews, observation, testing, and what people actually need.",
     },
-    { type: "text", value: ", " },
+    { type: "text", value: " " },
     {
       type: "chip",
       id: "ai",
       label: "AI experiences",
       detail: "shaping AI features that feel understandable, trustworthy, and useful in real workflows.",
     },
-    { type: "text", value: ", and " },
+    { type: "text", value: " " },
     {
       type: "chip",
       id: "systems",
       label: "design systems",
       detail: "building scalable UI foundations that help teams move faster without sacrificing clarity.",
     },
-    { type: "text", value: " — recently graduated from [University]." },
+    { type: "text", value: " " },
+    {
+      type: "chip",
+      id: "interaction",
+      label: "interaction design",
+      detail: "crafting intuitive flows, micro-interactions, and interfaces that guide users without friction.",
+    },
+    { type: "text", value: " and " },
+    {
+      type: "chip",
+      id: "web",
+      label: "web design",
+      detail: "designing and building responsive web experiences that balance aesthetics with performance.",
+    },
+    { type: "text", value: " - recently graduated from University of British Columbia." },
   ];
 
   const BIO_ABOUT = [
-    "Hi, I'm Medha Singh — a product designer and HCI graduate focused on interaction design, AI-driven experiences, and design systems.",
-    "I'm most at home in the messy middle, turning fuzzy problems into clear, elegant solutions.",
+    "Hi, I'm Medha",
+    "a Product and User Experience Designer with academic foundations in human cognition and computer science. I work across areas of user research, interaction design, and web design.",
   ];
 
   window.portfolioData = {

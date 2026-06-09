@@ -51,6 +51,8 @@ function applyThemeChange() {
   if (!shell) return false;
   shell.classList.toggle("theme-dark", state.dark);
   shell.classList.toggle("theme-light", !state.dark);
+  document.body.classList.toggle("theme-dark", state.dark);
+  document.body.classList.toggle("theme-light", !state.dark);
 
   document.querySelectorAll("[data-project-id]").forEach((card) => {
     const project = window.portfolioData.PROJECTS.find((p) => p.id === Number(card.dataset.projectId));
@@ -151,6 +153,7 @@ const TARGETED_UPDATE_SETS = [
     keys: new Set(["lightboxOpen", "lightboxSrc", "lightboxAlt", "lightboxZoom", "lightboxPanX", "lightboxPanY"]),
     apply: () => applyLightboxModal(),
   },
+  { keys: new Set(["activeBioChipId", "bioTypedText"]), apply: () => applyBioChipChange() },
 ];
 
 function setState(nextState) {
@@ -208,6 +211,21 @@ function startBioTypewriter(chip) {
   }, 16);
 }
 
+function applyBioChipChange() {
+  document.querySelectorAll(".bio-chip-group").forEach((group) => {
+    const btn = group.querySelector("[data-bio-chip]");
+    if (!btn) return;
+    const isActive = btn.dataset.bioChip === state.activeBioChipId;
+    group.classList.toggle("is-active", isActive);
+    btn.classList.toggle("is-active", isActive);
+    const detail = group.querySelector(".bio-chip-detail");
+    if (detail) {
+      detail.classList.toggle("is-visible", isActive);
+      if (!isActive) detail.textContent = "";
+    }
+  });
+}
+
 function toggleBioChip(chipId) {
   if (state.activeBioChipId === chipId) {
     collapseBioChip();
@@ -218,9 +236,7 @@ function toggleBioChip(chipId) {
   if (!chip) return;
 
   clearBioTypeTimer();
-  state.activeBioChipId = chipId;
-  state.bioTypedText = "";
-  render();
+  setState({ activeBioChipId: chipId, bioTypedText: "" });
   startBioTypewriter(chip);
 }
 
@@ -256,6 +272,10 @@ function handlePageChange(page) {
   state.bioTypedText = "";
   render();
   window.scrollTo(0, 0);
+  requestAnimationFrame(() => {
+    window.portfolioStack?.sync();
+    window.heroEnvelope?.sync?.();
+  });
 }
 
 function scrollToWorkSection() {
@@ -728,6 +748,8 @@ function render() {
 try {
   attachGlobalEvents();
   render();
+  document.body.classList.toggle("theme-dark", state.dark);
+  document.body.classList.toggle("theme-light", !state.dark);
 } catch (error) {
   console.error(error);
   app.innerHTML = `

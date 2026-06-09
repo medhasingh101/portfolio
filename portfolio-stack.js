@@ -17,6 +17,8 @@
       sequence: document.querySelector("[data-stack-sequence]"),
       sticky: document.querySelector("[data-stack-sticky]"),
       workScroll: document.querySelector("[data-stack-scroll]"),
+      workScrollInner: document.querySelector("[data-stack-scroll-inner]"),
+      workScrollbarThumb: document.querySelector("[data-work-scrollbar-thumb]"),
       workPanel: document.querySelector('[data-stack-panel="work"]'),
       skillsPanel: document.querySelector('[data-stack-panel="skills"]'),
       aboutPanel: document.querySelector('[data-stack-panel="about"]'),
@@ -34,8 +36,8 @@
     if (elements.sequence) {
       elements.sequence.style.minHeight = "";
     }
-    if (elements.workScroll) {
-      elements.workScroll.scrollTop = 0;
+    if (elements.workScrollInner) {
+      elements.workScrollInner.style.transform = "";
     }
 
     [elements.workPanel, elements.skillsPanel, elements.aboutPanel].forEach((panel) => {
@@ -47,9 +49,9 @@
 
   function sync() {
     const elements = getElements();
-    const { sequence, sticky, workScroll, workPanel, skillsPanel, aboutPanel } = elements;
+    const { sequence, sticky, workScroll, workScrollInner, workScrollbarThumb, workPanel, skillsPanel, aboutPanel } = elements;
 
-    if (!sequence || !sticky || !workScroll || !workPanel || !skillsPanel || !aboutPanel) {
+    if (!sequence || !sticky || !workScroll || !workScrollInner || !workPanel || !skillsPanel || !aboutPanel) {
       resetPanels(elements);
       return;
     }
@@ -57,14 +59,24 @@
     const { topOffset, panelGap } = getMetrics(sequence);
     const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
     const stickyHeight = sticky.offsetHeight;
-    const workScrollDistance = Math.max(0, workScroll.scrollHeight - workScroll.clientHeight);
+    const workScrollDistance = Math.max(0, workScrollInner.scrollHeight - workScroll.clientHeight);
     const totalProgress = workScrollDistance + revealDistance * 2;
     const sequenceHeight = stickyHeight + totalProgress + topOffset;
     const sequenceTop = sequence.offsetTop;
     const progress = clamp(window.scrollY - sequenceTop + topOffset, 0, totalProgress);
 
     sequence.style.minHeight = `${sequenceHeight}px`;
-    workScroll.scrollTop = Math.min(workScrollDistance, progress);
+    workScrollInner.style.transform = `translateY(-${Math.min(workScrollDistance, progress)}px)`;
+
+    if (workScrollbarThumb && workScrollDistance > 0) {
+      const trackHeight = workScroll.clientHeight;
+      const thumbRatio = trackHeight / workScrollInner.scrollHeight;
+      const thumbHeight = Math.max(32, trackHeight * thumbRatio);
+      const scrolled = Math.min(workScrollDistance, progress);
+      const thumbTop = (scrolled / workScrollDistance) * (trackHeight - thumbHeight);
+      workScrollbarThumb.style.height = `${thumbHeight}px`;
+      workScrollbarThumb.style.transform = `translateY(${thumbTop}px)`;
+    }
 
     const skillsProgress = clamp((progress - workScrollDistance) / revealDistance, 0, 1);
     const aboutProgress = clamp((progress - workScrollDistance - revealDistance) / revealDistance, 0, 1);

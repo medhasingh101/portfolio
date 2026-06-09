@@ -338,10 +338,13 @@
         </div>
         <div class="project-card-preview"${getPreviewStyle(project)}>
           ${renderPreviewContent(project)}
+          <div class="project-card-overlay">
+            <p class="project-card-overlay-text">${escapeHtml(project.desc)}</p>
+          </div>
         </div>
         <p class="eyebrow project-card-subtitle">${escapeHtml(project.subtitle)}</p>
         <h3 class="project-card-title">${escapeHtml(project.title)}</h3>
-        <p class="project-card-copy">${escapeHtml(project.desc)}</p>
+        ${project.methods ? `<p class="project-card-methods">${escapeHtml(project.methods)}</p>` : ""}
         <div class="project-card-link">
           <span class="project-card-link-text">View case study</span>
           <span class="project-card-link-arrow">-&gt;</span>
@@ -439,8 +442,8 @@
                 <div class="hero-main">
                   <div class="hero-copy">
                     <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
-                    ${typeReveal("Medha Singh", "h1", "hero-title", 300)}
-                    <p class="hero-summary">I design digital products that make complex things feel simple.</p>
+                    <p class="hero-greeting">Hi, I'm Medha</p>
+                    <p class="hero-summary">a Product and User Experience Designer with academic foundations in human cognition and computer science.</p>
                     <div class="bio-intro" aria-label="Designer bio highlights">
                       <p class="bio-intro-line">
                         ${renderBioIntro(state)}
@@ -450,7 +453,7 @@
                       <div class="hero-clip-note">
                         <svg class="hero-clip-svg" width="30" height="58" viewBox="0 0 30 58" fill="none" aria-hidden="true">
                           <path d="M 30,3 H 10 C 0,3 0,55 10,55 H 30" stroke="#9a8a66" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                          <path d="M 52,26 C 61,26 61,14 52,14 H 19 C 11,14 11,44 19,44 H 30" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
+                          <path d="M 30,44 H 19 C 11,44 11,14 19,14 H 52 Q 59,14 59,22" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
                         </svg>
                         <button type="button" class="hero-cta" data-hover data-hero-work>See my work &#x2192;</button>
                       </div>
@@ -475,8 +478,13 @@
             <div class="content-section stack-panel stack-panel-work" data-stack-panel="work">
               ${sectionHeader("01", "Selected Work")}
               <div class="stack-panel-body stack-panel-body-scroll" data-stack-scroll>
-                <div class="project-grid">
-                  ${window.portfolioData.PROJECTS.map((project) => projectCard(project, state)).join("")}
+                <div class="stack-panel-body-inner" data-stack-scroll-inner>
+                  <div class="project-grid">
+                    ${window.portfolioData.PROJECTS.map((project) => projectCard(project, state)).join("")}
+                  </div>
+                </div>
+                <div class="stack-scrollbar" aria-hidden="true">
+                  <div class="stack-scrollbar-thumb" data-work-scrollbar-thumb></div>
                 </div>
               </div>
             </div>
