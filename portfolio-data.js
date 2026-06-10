@@ -2,6 +2,7 @@
   const projectLibrary = window.portfolioProjects || {};
   const PROJECTS = [
     projectLibrary.netprep,
+    projectLibrary.bluread,
     {
       id: 2,
       title: "Design System",

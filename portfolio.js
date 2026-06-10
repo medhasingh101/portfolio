@@ -381,6 +381,16 @@ function syncDynaspot() {
   dynaspot.style.transform = `translate(${dynaspotState.x - 8}px, ${dynaspotState.y - 8}px)`;
 }
 
+function updateDynaspotFromEmbed(x, y, hovering) {
+  if (!dynaspotState.enabled) return;
+  dynaspotState.visible = true;
+  dynaspotState.hovering = Boolean(hovering);
+  dynaspotState.x = x;
+  dynaspotState.y = y;
+  syncDynaspot();
+}
+window.updateDynaspotFromEmbed = updateDynaspotFromEmbed;
+
 function setDynaspotEnabled(enabled) {
   dynaspotState.enabled = enabled;
   if (!enabled) {
