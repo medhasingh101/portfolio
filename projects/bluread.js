@@ -9,7 +9,12 @@
     tags: ["UX Design", "Front-End Development"],
     methods: "Product Design, Interface Design, Chrome Extension, Front-End Development",
     color: "#e0e4ed",
-    cardBackgroundLight: "#eaf0f8",
+    cardBackgroundLight: "#2e2b5c",
+    previewStageBackground: "#2e2b5c",
+    previewImage: "./assets/BluRead-banner.png",
+    previewAlt: "Bluread — privacy-first Chrome extension.",
+    previewImageFit: "contain",
+    previewImagePadding: "0px",
     full: {
       overview:
         "Bluread is a privacy-first Chrome extension that gives users autonomy over their news feeds. Built in 24 hours at cmd-f 2026, it lets people select specific keyword filters to hide articles that are violent, tragic, or designed to trigger a stressful reaction — with a no-cookie architecture and a strict no-data-sell-out policy.",
@@ -22,6 +27,13 @@
         { label: "Tech Stack", value: "HTML/CSS, Vanilla JS, Manifest V3, OpenAI API, Gemini API" },
       ],
       modules: [
+        {
+          type: "image",
+          src: "./assets/BluRead-banner.png",
+          alt: "Bluread — privacy-first Chrome extension banner.",
+          layout: "full",
+          loading: "eager",
+        },
         {
           type: "section",
           id: "inspiration",

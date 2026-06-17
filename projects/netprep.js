@@ -8,8 +8,6 @@
     desc: "Designed a low-pressure networking practice platform that helps students discover relevant communities and rehearse professional conversations with more confidence.",
     tags: ["UX Design", "Research"],
     methods: "User Research, Interaction Design, Prototyping, Figma, Usability Testing",
-    color: "#ece6df",
-    cardBackgroundLight: "#eaf0f8",
     previewImage: "./Group 278.png",
     previewAlt: "NetPrep — conversation-practice platform preview.",
     previewImageFit: "cover",

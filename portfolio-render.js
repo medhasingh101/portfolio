@@ -27,12 +27,6 @@
     return window.portfolioData.PROJECTS.find((project) => project.id === state.activeProjectId) ?? null;
   }
 
-  function cardBackground(project, state) {
-    return state.dark
-      ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614"
-      : project.cardBackgroundLight || "#eaf0f8";
-  }
-
   function sectionHeader(index, title) {
     return `
       <div class="section-header">
@@ -224,7 +218,11 @@
           data-lightbox-src="${escapeHtml(module.src)}"
           data-lightbox-alt="${escapeHtml(module.alt || projectTitle)}"
         >
-        ${module.caption ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>` : ""}
+        ${module.captionHtml
+          ? `<figcaption class="case-study-media-caption">${module.captionHtml}</figcaption>`
+          : module.caption
+          ? `<figcaption class="case-study-media-caption">${escapeHtml(module.caption)}</figcaption>`
+          : ""}
       </figure>
     `;
   }
@@ -332,7 +330,7 @@
     const cardClassName = project.cardClassName ? ` ${project.cardClassName}` : "";
 
     return `
-      <article class="project-card${cardClassName}" data-hover data-project-id="${project.id}" style="background:${cardBackground(project, state)}">
+      <article class="project-card${cardClassName}" data-hover data-project-id="${project.id}">
         <div class="project-card-tags">
           ${project.tags.map((tag) => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join("")}
         </div>
@@ -407,69 +405,38 @@
     return window.portfolioData.BIO_INTRO_ITEMS.map((item) => renderBioIntroItem(item, state)).join("");
   }
 
-  function renderHeroLetter() {
-    return `
-      <div class="scroll-envelope-letter-content">
-        <p class="scroll-envelope-letter-kicker">letter of introduction</p>
-        ${window.portfolioData.HERO_LETTER_LINES.map(
-          (line, index) => `
-            <p class="scroll-envelope-letter-line" style="--line-delay:${(index * 0.2).toFixed(2)}">
-              ${escapeHtml(line)}
-            </p>
-          `
-        ).join("")}
-      </div>
-    `;
-  }
-
   function renderHomePage(state) {
     return `
       <div>
-        <section class="hero-sequence" data-hero-sequence>
-          <div class="hero-sticky" data-hero-sticky>
-            <div class="hero-envelope-scene" data-hero-envelope>
-              <div class="scroll-envelope" aria-hidden="true">
-                <div class="scroll-envelope-back"></div>
-                <div class="scroll-envelope-letter">${renderHeroLetter()}</div>
-                <div class="scroll-envelope-flap scroll-envelope-flap-front"></div>
-                <div class="scroll-envelope-flap scroll-envelope-flap-top"></div>
+        <section class="hero">
+          <div class="hero-main">
+            <div class="hero-copy">
+              <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
+              <p class="hero-greeting">Hi, I'm Medha</p>
+              <p class="hero-summary">a Product and User Experience Designer with academic foundations in human cognition and computer science.</p>
+              <div class="bio-intro" aria-label="Designer bio highlights">
+                <p class="bio-intro-line">
+                  ${renderBioIntro(state)}
+                </p>
               </div>
-              <p class="hero-envelope-prompt" aria-hidden="true">scroll to open</p>
-              <div class="hero hero-card">
-                <div class="hero-card-fold hero-card-fold-top" aria-hidden="true"></div>
-                <div class="hero-card-fold hero-card-fold-bottom" aria-hidden="true"></div>
-                <div class="hero-glow"></div>
-                <div class="hero-main">
-                  <div class="hero-copy">
-                    <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
-                    <p class="hero-greeting">Hi, I'm Medha</p>
-                    <p class="hero-summary">a Product and User Experience Designer with academic foundations in human cognition and computer science.</p>
-                    <div class="bio-intro" aria-label="Designer bio highlights">
-                      <p class="bio-intro-line">
-                        ${renderBioIntro(state)}
-                      </p>
-                    </div>
-                    <div class="hero-actions">
-                      <div class="hero-clip-note">
-                        <svg class="hero-clip-svg" width="30" height="58" viewBox="0 0 30 58" fill="none" aria-hidden="true">
-                          <path d="M 30,3 H 10 C 0,3 0,55 10,55 H 30" stroke="#9a8a66" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                          <path d="M 30,44 H 19 C 11,44 11,14 19,14 H 52 Q 59,14 59,22" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
-                        </svg>
-                        <button type="button" class="hero-cta" data-hover data-hero-work>See my work &#x2192;</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="hero-stats" aria-label="Experience highlights">
-                    ${window.portfolioData.HERO_PROOF_POINTS.map(
-                      (item) => `<span class="hero-proof-item">${escapeHtml(item)}</span>`
-                    ).join("")}
-                  </div>
-                </div>
-                <div class="hero-scroll">
-                  <span class="hero-scroll-label">selected work below</span>
+              <div class="hero-actions">
+                <div class="hero-clip-note">
+                  <svg class="hero-clip-svg" width="30" height="58" viewBox="0 0 30 58" fill="none" aria-hidden="true">
+                    <path d="M 30,3 H 10 C 0,3 0,55 10,55 H 30" stroke="#9a8a66" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                    <path d="M 30,44 H 19 C 11,44 11,14 19,14 H 52 Q 59,14 59,22" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
+                  </svg>
+                  <button type="button" class="hero-cta" data-hover data-hero-work>See my work &#x2192;</button>
                 </div>
               </div>
             </div>
+            <div class="hero-stats" aria-label="Experience highlights">
+              ${window.portfolioData.HERO_PROOF_POINTS.map(
+                (item) => `<span class="hero-proof-item">${escapeHtml(item)}</span>`
+              ).join("")}
+            </div>
+          </div>
+          <div class="hero-scroll">
+            <span class="hero-scroll-label">selected work below</span>
           </div>
         </section>
 
@@ -682,7 +649,7 @@
             <span class="theme-toggle-label sr-only">${state.dark ? "Light mode" : "Dark mode"}</span>
           </button>
         </div>
-        <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>Medha Singh</button>
+        <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>MEDHA.</button>
         <div class="site-nav-links">
           <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
             <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work &#9662;</button>

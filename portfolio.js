@@ -54,14 +54,6 @@ function applyThemeChange() {
   document.body.classList.toggle("theme-dark", state.dark);
   document.body.classList.toggle("theme-light", !state.dark);
 
-  document.querySelectorAll("[data-project-id]").forEach((card) => {
-    const project = window.portfolioData.PROJECTS.find((p) => p.id === Number(card.dataset.projectId));
-    if (!project) return;
-    card.style.background = state.dark
-      ? window.portfolioData.DARK_CARD_COLORS[project.color] || "#181614"
-      : project.cardBackgroundLight || "#eaf0f8";
-  });
-
   const toggle = document.querySelector("[data-theme-toggle]");
   if (toggle) {
     toggle.title = state.dark ? "Switch to light mode" : "Switch to dark mode";
@@ -274,7 +266,6 @@ function handlePageChange(page) {
   window.scrollTo(0, 0);
   requestAnimationFrame(() => {
     window.portfolioStack?.sync();
-    window.heroEnvelope?.sync?.();
   });
 }
 
@@ -554,7 +545,6 @@ function attachEvents() {
 
   initializeTypeReveal();
   initializeDynaspot();
-  window.heroEnvelope?.initialize();
   window.portfolioStack?.initialize();
 }
 

@@ -3,6 +3,7 @@
   const PROJECTS = [
     projectLibrary.netprep,
     projectLibrary.bluread,
+    projectLibrary.sidequest,
     {
       id: 2,
       title: "Design System",
@@ -10,7 +11,6 @@
       desc: "Built a scalable component library from scratch for a B2B SaaS product. Cut design-to-dev handoff time by 60%.",
       tags: ["UX Design", "Graphic Design"],
       methods: "Component Library, Design Tokens, Figma Variables, Documentation, Stakeholder Alignment",
-      color: "#e4ede9",
       full: {
         overview:
           "A comprehensive design system for a B2B SaaS product, from token architecture to a full component library and docs site.",
@@ -40,7 +40,6 @@
       desc: "Led product design for a health-tracking app from concept to App Store launch. 4.8-star rating, featured by Apple.",
       tags: ["UX Design"],
       methods: "User Research, iOS Design, Figma, Usability Testing, Product Strategy",
-      color: "#ebe4ed",
       full: {
         overview:
           "A greenfield mobile product for a health-tech startup, from zero to App Store in five months.",
@@ -70,7 +69,6 @@
       desc: "Full visual identity for a DTC food brand: logo, type, packaging, and guidelines. Launched across four markets.",
       tags: ["Graphic Design"],
       methods: "Logo Design, Typography, Colour, Packaging, Brand Guidelines, Adobe Suite",
-      color: "#ede9e0",
       full: {
         overview:
           "End-to-end brand identity for a direct-to-consumer food startup entering a crowded market.",
@@ -100,7 +98,6 @@
       desc: "Animated brand system for a web3 gaming community: logo reveals, UI transitions, and social content.",
       tags: ["Graphic Design"],
       methods: "After Effects, Lottie, Motion Design, Brand Strategy, Social Templates",
-      color: "#e0e4ed",
       full: {
         overview: "Motion-first rebrand for a web3 gaming community with 80k members.",
         role: "Motion & Brand Designer",
@@ -134,15 +131,6 @@
     { id: "s7", label: "Front-end", px: 35, py: 78, subs: ["React", "HTML/CSS", "Framer", "Webflow"] },
   ];
 
-  const DARK_CARD_COLORS = {
-    "#ece6df": "#101827",
-    "#edeae4": "#121b2b",
-    "#e4ede9": "#162132",
-    "#ebe4ed": "#172235",
-    "#ede9e0": "#0f1726",
-    "#e0e4ed": "#0d1522",
-  };
-
   const CONTACT_LINKS = [
     ["Email", "hello@yourname.com", "mailto:hello@yourname.com"],
     ["LinkedIn", "linkedin.com/in/yourname", "https://linkedin.com"],
@@ -156,11 +144,6 @@
   ];
 
   const HERO_EYEBROW = "Product Designer / Vancouver / Working Worldwide";
-
-  const HERO_LETTER_LINES = [
-    "Hi, I'm Medha",
-    "a Product and User Experience Designer with academic foundations in human cognition and computer science. I work across areas of user research, interaction design, and web design.",
-  ];
 
   const HERO_PROOF_POINTS = [
     "3 real-world research studies",
@@ -214,11 +197,9 @@
   window.portfolioData = {
     PROJECTS,
     INITIAL_SKILLS,
-    DARK_CARD_COLORS,
     CONTACT_LINKS,
     SOCIAL_LINKS,
     HERO_EYEBROW,
-    HERO_LETTER_LINES,
     HERO_PROOF_POINTS,
     BIO_INTRO_ITEMS,
     BIO_ABOUT,
