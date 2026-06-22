@@ -11,9 +11,9 @@
     color: "#e0e4ed",
     cardBackgroundLight: "#2e2b5c",
     previewStageBackground: "#2e2b5c",
-    previewImage: "./assets/BluRead-banner.png",
+    previewImage: "./assets/bluread-demo-gif.gif",
     previewAlt: "Bluread — privacy-first Chrome extension.",
-    previewImageFit: "contain",
+    previewImageFit: "cover",
     previewImagePadding: "0px",
     full: {
       overview:

@@ -14,11 +14,13 @@ const state = {
   activeBioChipId: null,
   bioTypedText: "",
   skills: window.portfolioData.INITIAL_SKILLS.map((skill) => ({ ...skill, subs: [...skill.subs] })),
+  heroBtnOffsets: { work: { x: 0, y: 0 }, about: { x: 0, y: 0 }, skills: { x: 0, y: 0 } },
 };
 
 const app = document.getElementById("app");
 let dragState = null;
 let lightboxDragState = null;
+let heroDragState = null;
 let typeRevealObserver = null;
 let bioTypeTimer = null;
 let dynaspot = null;
@@ -66,6 +68,16 @@ function applyThemeChange() {
         : `<svg viewBox="0 0 24 24" class="theme-toggle-svg" focusable="false"><path d="M20.2 14.85A8.75 8.75 0 0 1 9.15 3.8a8.75 8.75 0 1 0 11.05 11.05Z" /></svg>`;
     }
   }
+  const heroImgs = [
+    { sel: ".hero-side-img[alt='About me']",  light: "assets/about me.png",  dark: "assets/about me - dark.png" },
+    { sel: ".hero-side-img[alt='Skills']",     light: "assets/skills.png",    dark: "assets/skills - dark.png" },
+    { sel: ".hero-work-img",                   light: "assets/work.png",      dark: "assets/work - dark.png" },
+  ];
+  heroImgs.forEach(({ sel, light, dark }) => {
+    const el = document.querySelector(sel);
+    if (el) el.src = state.dark ? dark : light;
+  });
+
   return true;
 }
 
@@ -232,6 +244,52 @@ function toggleBioChip(chipId) {
   startBioTypewriter(chip);
 }
 
+function getHistoryData() {
+  return {
+    page: state.page,
+    activeProjectId: state.activeProjectId,
+    projectReturnPage: state.projectReturnPage,
+  };
+}
+
+function getRouteHash() {
+  if (state.page === "project" && state.activeProjectId != null) {
+    return `#project-${state.activeProjectId}`;
+  }
+  return state.page !== "home" ? `#${state.page}` : "#home";
+}
+
+function pushHistory() {
+  history.pushState(getHistoryData(), "", getRouteHash());
+}
+
+function replaceHistory() {
+  history.replaceState(getHistoryData(), "", getRouteHash());
+}
+
+function restoreFromHistory(hist) {
+  if (!hist) return;
+  state.page = hist.page || "home";
+  state.activeProjectId = hist.activeProjectId ?? null;
+  state.projectReturnPage = hist.projectReturnPage || "home";
+  state.contactOpen = false;
+  state.lightboxOpen = false;
+  state.lightboxSrc = "";
+  state.lightboxAlt = "";
+  state.lightboxZoom = 1;
+  state.lightboxPanX = 0;
+  state.lightboxPanY = 0;
+  state.workMenuOpen = false;
+  clearBioTypeTimer();
+  state.activeBioChipId = null;
+  state.bioTypedText = "";
+  render();
+  window.scrollTo(0, 0);
+  requestAnimationFrame(() => {
+    window.portfolioStack?.sync();
+  });
+}
+
 function handleProjectOpen(projectId) {
   state.activeProjectId = Number(projectId);
   state.projectReturnPage = state.page === "ux" || state.page === "graphic" ? state.page : "home";
@@ -244,6 +302,7 @@ function handleProjectOpen(projectId) {
   state.lightboxPanX = 0;
   state.lightboxPanY = 0;
   state.workMenuOpen = false;
+  pushHistory();
   render();
   window.scrollTo(0, 0);
 }
@@ -262,6 +321,7 @@ function handlePageChange(page) {
   clearBioTypeTimer();
   state.activeBioChipId = null;
   state.bioTypedText = "";
+  pushHistory();
   render();
   window.scrollTo(0, 0);
   requestAnimationFrame(() => {
@@ -420,6 +480,21 @@ function attachEvents() {
     button.addEventListener("click", scrollToWorkSection);
   });
 
+  document.querySelectorAll("[data-hero-skills]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.page !== "home") {
+        handlePageChange("home");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            window.portfolioStack?.scrollToSkillsSection();
+          });
+        });
+        return;
+      }
+      window.portfolioStack?.scrollToSkillsSection();
+    });
+  });
+
   document.querySelectorAll("[data-bio-chip]").forEach((chip) => {
     chip.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -445,14 +520,20 @@ function attachEvents() {
 
   document.querySelectorAll("[data-lightbox-image]").forEach((image) => {
     image.addEventListener("click", (event) => {
+      const stack = image.closest(".sq-ab-stack");
+      if (stack) {
+        const card = image.closest(".sq-ab-card");
+        const isFlipped = stack.classList.contains("sq-ab-flipped");
+        const isBack = isFlipped ? card.classList.contains("sq-ab-card-a") : card.classList.contains("sq-ab-card-b");
+        if (isBack) return;
+      }
       event.stopPropagation();
       openImageLightbox(image.dataset.lightboxSrc, image.dataset.lightboxAlt);
     });
   });
 
-  const aboutButton = document.querySelector("[data-nav-about]");
-  if (aboutButton) {
-    aboutButton.addEventListener("click", () => {
+  document.querySelectorAll("[data-nav-about]").forEach((btn) => {
+    btn.addEventListener("click", () => {
       if (state.page !== "home") {
         handlePageChange("home");
         requestAnimationFrame(() => {
@@ -462,7 +543,7 @@ function attachEvents() {
         window.portfolioStack?.scrollToAboutSection();
       }
     });
-  }
+  });
 
   const contactOpen = document.querySelector("[data-contact-open]");
   if (contactOpen) {
@@ -532,6 +613,7 @@ function attachEvents() {
 
       handle.addEventListener("mousedown", (event) => {
         event.preventDefault();
+        handle.style.cursor = "grabbing";
         startDrag(event.clientX, event.clientY);
       });
 
@@ -543,12 +625,27 @@ function attachEvents() {
     });
   }
 
+  document.querySelectorAll("[data-hero-drag]").forEach((wrap) => {
+    const startDrag = (clientX, clientY) => {
+      const key = wrap.dataset.heroDrag;
+      const current = state.heroBtnOffsets[key] || { x: 0, y: 0 };
+      heroDragState = { key, startMouseX: clientX, startMouseY: clientY, startX: current.x, startY: current.y, moved: false };
+      wrap.style.cursor = "grabbing";
+    };
+    wrap.addEventListener("mousedown", (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+    wrap.addEventListener("touchstart", (e) => { const t = e.touches[0]; startDrag(t.clientX, t.clientY); }, { passive: true });
+  });
+
   initializeTypeReveal();
   initializeDynaspot();
   window.portfolioStack?.initialize();
 }
 
 function attachGlobalEvents() {
+  window.addEventListener("popstate", (event) => {
+    restoreFromHistory(event.state);
+  });
+
   window.addEventListener("pointermove", (event) => {
     if (!dynaspotState.enabled) return;
 
@@ -608,6 +705,18 @@ function attachGlobalEvents() {
       return;
     }
 
+    if (heroDragState) {
+      const dx = event.clientX - heroDragState.startMouseX;
+      const dy = event.clientY - heroDragState.startMouseY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) heroDragState.moved = true;
+      const nextX = heroDragState.startX + dx;
+      const nextY = heroDragState.startY + dy;
+      state.heroBtnOffsets[heroDragState.key] = { x: nextX, y: nextY };
+      const node = document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
+      if (node) node.style.transform = `translate(${nextX}px, ${nextY}px)`;
+      return;
+    }
+
     if (!dragState) return;
 
     const dx = ((event.clientX - dragState.startMouseX) / dragState.width) * 100;
@@ -628,17 +737,44 @@ function attachGlobalEvents() {
   });
 
   window.addEventListener("mouseup", () => {
+    if (heroDragState) {
+      const wrap = document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
+      if (wrap) wrap.style.cursor = "";
+      if (heroDragState.moved) {
+        const preventClick = (e) => { e.stopPropagation(); e.preventDefault(); wrap?.removeEventListener("click", preventClick, true); };
+        wrap?.addEventListener("click", preventClick, true);
+      }
+      heroDragState = null;
+    }
+    if (dragState) {
+      const handle = document.querySelector(`[data-skill-handle="${dragState.id}"]`);
+      if (handle) handle.style.cursor = "";
+    }
     dragState = null;
     lightboxDragState = null;
   });
 
   window.addEventListener("touchend", () => {
+    heroDragState = null;
     dragState = null;
     lightboxDragState = null;
   });
 
   window.addEventListener("touchmove", (event) => {
     const touch = event.touches[0];
+
+    if (heroDragState) {
+      event.preventDefault();
+      const dx = touch.clientX - heroDragState.startMouseX;
+      const dy = touch.clientY - heroDragState.startMouseY;
+      heroDragState.moved = true;
+      const nextX = heroDragState.startX + dx;
+      const nextY = heroDragState.startY + dy;
+      state.heroBtnOffsets[heroDragState.key] = { x: nextX, y: nextY };
+      const node = document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
+      if (node) node.style.transform = `translate(${nextX}px, ${nextY}px)`;
+      return;
+    }
 
     if (lightboxDragState) {
       event.preventDefault();
@@ -747,7 +883,18 @@ function render() {
 
 try {
   attachGlobalEvents();
+  const _hash = window.location.hash.slice(1);
+  if (_hash && _hash !== "home") {
+    const _projectMatch = _hash.match(/^project-(\d+)$/);
+    if (_projectMatch) {
+      state.page = "project";
+      state.activeProjectId = Number(_projectMatch[1]);
+    } else {
+      state.page = _hash;
+    }
+  }
   render();
+  replaceHistory();
   document.body.classList.toggle("theme-dark", state.dark);
   document.body.classList.toggle("theme-light", !state.dark);
 } catch (error) {

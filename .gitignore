@@ -1,2 +1,6 @@
 node_modules
 dist
+
+# Large assets — deployed via Vercel CLI directly
+assets/bluread-demo-gif.gif
+assets/sidequest/CPSC444-2025W2-L2A-SideQuests.mp4

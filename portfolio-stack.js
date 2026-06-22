@@ -94,6 +94,23 @@
     aboutPanel.style.boxShadow = aboutProgress > 0 ? STACK_ELEVATED_SHADOW : "";
   }
 
+  function scrollToSkillsSection() {
+    const elements = getElements();
+    const { sequence, sticky, workScroll } = elements;
+
+    if (!sequence || !sticky || !workScroll) return;
+
+    const { topOffset } = getMetrics(sequence);
+    const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
+    const workScrollDistance = Math.max(0, workScroll.scrollHeight - workScroll.clientHeight);
+    const targetTop = sequence.offsetTop + workScrollDistance + revealDistance - topOffset;
+
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+  }
+
   function scrollToAboutSection() {
     const elements = getElements();
     const { sequence, sticky, workScroll } = elements;
@@ -137,6 +154,7 @@
   window.portfolioStack = {
     initialize,
     scrollToWorkSection,
+    scrollToSkillsSection,
     scrollToAboutSection,
     sync,
   };

@@ -10,8 +10,8 @@
     methods: "UX Research · A/B Experiment · Figma · Cognitive Walkthrough",
     color: "#edeae4",
     cardBackgroundLight: "#f5f3ee",
-    previewStageBackground: "#f5f3ee",
-    previewImage: "./assets/sidequest/medfi-home%20(2).png",
+    previewStageBackground: "#ffffff",
+    previewImage: "./assets/sidequest/project walkthrough-gif.gif",
     previewAlt: "SideQuest — swipe-based hobby discovery app.",
     previewImageFit: "cover",
     previewImagePadding: "0px",
@@ -24,6 +24,15 @@
         { label: "Team", value: "Allison Ko, Kiana Modirian, Nina Trochtchanovitch, Medha Singh" },
       ],
       modules: [
+
+        // ── DEMO VIDEO ───────────────────────────────────────────────
+        {
+          type: "video",
+          src: "./assets/sidequest/CPSC444-2025W2-L2A-SideQuests.mp4",
+          layout: "full",
+          controls: true,
+          caption: "Project demo — SideQuest",
+        },
 
         // ── PROBLEM ────────────────────────────────────────────────
         {
@@ -89,7 +98,7 @@
           src: "./assets/sidequest/sketch-preference-first.jpg",
           alt: "Sketch for Design 1: Preference First.",
           captionHtml: "<strong>Design 1: Preference First.</strong> Set constraints upfront, get a filtered feed. Maximum control, but the upfront form felt like homework and didn't foreground low-commitment entry.",
-          layout: "full",
+          layout: "medium",
         },
 
         {
@@ -97,7 +106,7 @@
           src: "./assets/sidequest/sketch-tinder.png.png",
           alt: "Sketch for Design 2: Tinder-Style.",
           captionHtml: "<strong>Design 2: Tinder-Style (chosen).</strong> Swipe through hobby cards. Liked hobbies go to Matches. From there, access beginner-friendly activities before committing. Low-stakes framing encourages exploring outside your comfort zone.",
-          layout: "full",
+          layout: "medium",
         },
 
         {
@@ -105,7 +114,7 @@
           src: "./assets/sidequest/sketch-engagement-branching.png",
           alt: "Sketch for Design 3: Engagement Branching.",
           captionHtml: "<strong>Design 3: Engagement Branching.</strong> Choose how you want to engage first (workshop / with friends / alone), then see relevant hobbies. Solves for format preference but limits discovery breadth.",
-          layout: "full",
+          layout: "compact",
         },
 
         {
@@ -194,7 +203,7 @@
           layout: "full",
           html: `
             <div class="sq-ab-stack">
-              <div class="sq-ab-card sq-ab-card-a">
+              <div class="sq-ab-card sq-ab-card-a" onclick="this.parentElement.classList.remove('sq-ab-flipped')">
                 <img
                   src="./assets/sidequest/medfi-version-a.png"
                   alt="Version A: Matches tab with Committed filter."
@@ -204,7 +213,7 @@
                 />
                 <div class="sq-ab-card-caption"><strong>Version A:</strong> Committed hobbies inside the Matches tab, under a "Committed" filter. Hypothesis: users expect progression states near Matches.</div>
               </div>
-              <div class="sq-ab-card sq-ab-card-b">
+              <div class="sq-ab-card sq-ab-card-b" onclick="this.parentElement.classList.add('sq-ab-flipped')">
                 <img
                   src="./assets/sidequest/medfi-version-b.png"
                   alt="Version B: Profile with My Hobbies."
@@ -215,6 +224,10 @@
                 <div class="sq-ab-card-caption"><strong>Version B:</strong> Committed hobbies inside Profile &rarr; My Hobbies. Cleaner conceptual separation, but an extra navigation step.</div>
               </div>
             </div>
+            <p class="sq-ab-hint">
+              <span class="sq-ab-hint-a">click to compare &rarr;</span>
+              <span class="sq-ab-hint-b">&larr; back to Version A</span>
+            </p>
           `,
         },
 
@@ -312,34 +325,34 @@
         },
 
         {
-          type: "image",
-          src: "./assets/sidequest/boxplot-time.png",
-          alt: "Box plot: time to success by condition.",
-          caption: "Time to success by condition",
+          type: "text",
           layout: "full",
-        },
-        {
-          type: "image",
-          src: "./assets/sidequest/boxplot-clicks.png",
-          alt: "Box plot: total clicks by condition.",
-          caption: "Total clicks by condition",
-          layout: "full",
-        },
-        {
-          type: "image",
-          src: "./assets/sidequest/boxplot-errors.png",
-          alt: "Box plot: error clicks by condition.",
-          caption: "Error clicks by condition",
-          layout: "full",
+          html: `
+            <div class="sq-boxplot-row">
+              <figure class="sq-boxplot-figure">
+                <img src="./assets/sidequest/boxplot-time.png" alt="Box plot: time to success by condition." data-lightbox-image data-lightbox-src="./assets/sidequest/boxplot-time.png" data-lightbox-alt="Box plot: time to success by condition." />
+                <figcaption>Time to success</figcaption>
+              </figure>
+              <figure class="sq-boxplot-figure">
+                <img src="./assets/sidequest/boxplot-clicks.png" alt="Box plot: total clicks by condition." data-lightbox-image data-lightbox-src="./assets/sidequest/boxplot-clicks.png" data-lightbox-alt="Box plot: total clicks by condition." />
+                <figcaption>Total clicks</figcaption>
+              </figure>
+              <figure class="sq-boxplot-figure">
+                <img src="./assets/sidequest/boxplot-errors.png" alt="Box plot: error clicks by condition." data-lightbox-image data-lightbox-src="./assets/sidequest/boxplot-errors.png" data-lightbox-alt="Box plot: error clicks by condition." />
+                <figcaption>Error clicks</figcaption>
+              </figure>
+            </div>
+          `,
         },
 
         {
           type: "text",
           html: `
             <div class="case-study-finding">
-              <p><strong>Results didn't reach significance (p &gt; 0.05, n=8): but both parametric and non-parametric tests pointed the same direction, and the qualitative data explained why.</strong> A p-value of 0.104 with 8 participants doesn't mean no effect: it means we can't be confident at this sample size. The consistent direction across all three measures still carries weight.</p>
+              <p><strong>Results didn't reach significance (p &gt; 0.05, n=8): but both parametric and non-parametric tests pointed the same direction, and the qualitative data explained why.</strong></p>
+              <p>A p-value of 0.104 with 8 participants doesn't mean no effect: it means we can't be confident at this sample size. The consistent direction across all three measures still carries weight.</p>
             </div>
-            <p class="case-study-small-label" style="margin-top:32px;">Findings</p>
+            <p class="case-study-small-label" style="margin-top:32px;">Qualitative findings</p>
             <div class="case-study-finding" style="margin-top:12px;">
               <ul>
                 <li>Both conditions: participants looked in Matches first: Version A matched this expectation, Version B didn't</li>
@@ -348,6 +361,28 @@
                 <li>Everything rated well except finding committed hobbies (M=3.25/5): the weakest score matched the weakest behavioural result exactly</li>
               </ul>
             </div>
+            <figure style="margin-top:32px;">
+              <img
+                src="./assets/sidequest/444%20Experiment%20Analysis%20-%20Frame%202.jpg"
+                alt="Affinity diagram: swiping home screen."
+                data-lightbox-image
+                data-lightbox-src="./assets/sidequest/444%20Experiment%20Analysis%20-%20Frame%202.jpg"
+                data-lightbox-alt="Affinity diagram — struggle navigating home screen swipe functionality."
+                style="width:100%;height:auto;border-radius:8px;cursor:zoom-in;display:block;"
+              />
+              <figcaption style="margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Affinity diagram — home screen swipe discoverability &nbsp;(click to zoom)</figcaption>
+            </figure>
+            <figure style="margin-top:28px;">
+              <img
+                src="./assets/sidequest/444%20Experiment%20Analysis%20-%20matches%20and%20committed%20hobbies%20mismatch.jpg"
+                alt="Affinity diagram: matches and committed hobbies mental model mismatch."
+                data-lightbox-image
+                data-lightbox-src="./assets/sidequest/444%20Experiment%20Analysis%20-%20matches%20and%20committed%20hobbies%20mismatch.jpg"
+                data-lightbox-alt="Affinity diagram — mental model mismatch between matched and committed hobbies."
+                style="width:100%;height:auto;border-radius:8px;cursor:zoom-in;display:block;"
+              />
+              <figcaption style="margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">Affinity diagram — matched vs. committed mental model mismatch &nbsp;(click to zoom)</figcaption>
+            </figure>
             <p class="case-study-small-label" style="margin-top:32px;">Survey scores</p>
             <ul style="list-style:none;padding:0;margin-top:12px;line-height:2.4;font-family:var(--sans);font-size:17px;">
               <li style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06);">Hobby page information amount <span style="font-family:var(--mono);font-size:14px;color:var(--muted);">4.88 / 5</span></li>

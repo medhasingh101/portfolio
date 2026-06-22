@@ -356,7 +356,7 @@
       .map((sub, index) => {
         const angle = (index / skill.subs.length) * 2 * Math.PI - Math.PI / 2;
         const tx = `${Math.cos(angle) * 126}px`;
-        const ty = `${Math.sin(angle) * 88}px`;
+        const ty = `${Math.sin(angle) * 44}px`;
         const delay = `${index * 36}ms`;
         const opacityDelay = `${index * 24}ms`;
 
@@ -369,7 +369,7 @@
       .join("");
 
     return `
-      <div class="skill-node" style="left:${skill.px}%; top:${skill.py}%;" data-skill-id="${skill.id}">
+      <div class="skill-node" style="left:${skill.px}%; top:${skill.py}%;${skill.color ? ` --skill-color:${skill.color};` : ""}" data-skill-id="${skill.id}">
         ${subs}
         <button type="button" class="skill-node-chip" data-hover data-skill-handle="${skill.id}">
           ${escapeHtml(skill.label)}
@@ -406,9 +406,27 @@
   }
 
   function renderHomePage(state) {
+    const off = state.heroBtnOffsets || {};
+    const wOff = off.work   || { x: 0, y: 0 };
+    const aOff = off.about  || { x: 0, y: 0 };
+    const sOff = off.skills || { x: 0, y: 0 };
     return `
-      <div>
+      <div class="hero-scene">
         <section class="hero">
+          <div class="hero-top">
+            <div class="hero-side-nav">
+              <div class="hero-btn-drag-wrap" data-hero-drag="about" style="transform:translate(${aOff.x}px,${aOff.y}px)">
+                <button type="button" class="hero-side-btn" data-hover data-nav-about>
+                  <img src="${state.dark ? 'assets/about me - dark.png' : 'assets/about me.png'}" alt="About me" class="hero-side-img" />
+                </button>
+              </div>
+              <div class="hero-btn-drag-wrap" data-hero-drag="skills" style="transform:translate(${sOff.x}px,${sOff.y}px)">
+                <button type="button" class="hero-side-btn" data-hover data-hero-skills>
+                  <img src="${state.dark ? 'assets/skills - dark.png' : 'assets/skills.png'}" alt="Skills" class="hero-side-img" />
+                </button>
+              </div>
+            </div>
+          </div>
           <div class="hero-main">
             <div class="hero-copy">
               <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
@@ -420,12 +438,10 @@
                 </p>
               </div>
               <div class="hero-actions">
-                <div class="hero-clip-note">
-                  <svg class="hero-clip-svg" width="30" height="58" viewBox="0 0 30 58" fill="none" aria-hidden="true">
-                    <path d="M 30,3 H 10 C 0,3 0,55 10,55 H 30" stroke="#9a8a66" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                    <path d="M 30,44 H 19 C 11,44 11,14 19,14 H 52 Q 59,14 59,22" stroke="#9a8a66" stroke-width="2" stroke-linecap="round" fill="none"/>
-                  </svg>
-                  <button type="button" class="hero-cta" data-hover data-hero-work>See my work &#x2192;</button>
+                <div class="hero-btn-drag-wrap" data-hero-drag="work" style="transform:translate(${wOff.x}px,${wOff.y}px)">
+                  <button type="button" class="hero-work-img-btn" data-hover data-hero-work>
+                    <img src="${state.dark ? 'assets/work - dark.png' : 'assets/work.png'}" alt="See my work" class="hero-work-img" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -439,8 +455,9 @@
             <span class="hero-scroll-label">selected work below</span>
           </div>
         </section>
+      </div>
 
-        <section class="stack-sequence" data-stack-sequence>
+      <section class="stack-sequence" data-stack-sequence>
           <div class="stack-sticky" data-stack-sticky>
             <div class="content-section stack-panel stack-panel-work" data-stack-panel="work">
               ${sectionHeader("01", "Selected Work")}
@@ -459,8 +476,8 @@
             <div class="content-section content-section-skills stack-panel stack-panel-skills" data-stack-panel="skills">
               ${sectionHeader("02", "Skills")}
               <div class="stack-panel-body">
+                <p class="skills-canvas-note">hover to explore / drag to rearrange</p>
                 <div class="skills-canvas" data-skills-canvas>
-                  <p class="skills-canvas-note">hover to explore / drag to rearrange</p>
                   ${state.skills.map(renderSkillNode).join("")}
                 </div>
               </div>
@@ -471,7 +488,7 @@
               <div class="stack-panel-body">
                 <div class="about-grid">
                   <div class="about-photo">
-                    <span class="label-inline">Photo</span>
+                    <img src="assets/about me - picture.png" alt="Medha Singh" class="about-photo-img" />
                   </div>
                   <div>
                     ${typeReveal("I design with clarity and intention", "h2", "about-title", 80)}
@@ -485,8 +502,7 @@
               </div>
             </div>
           </div>
-        </section>
-      </div>
+      </section>
     `;
   }
 

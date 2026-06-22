@@ -1,145 +1,31 @@
 (function () {
   const projectLibrary = window.portfolioProjects || {};
   const PROJECTS = [
-    projectLibrary.netprep,
-    projectLibrary.bluread,
     projectLibrary.sidequest,
-    {
-      id: 2,
-      title: "Design System",
-      subtitle: "SaaS / 2023",
-      desc: "Built a scalable component library from scratch for a B2B SaaS product. Cut design-to-dev handoff time by 60%.",
-      tags: ["UX Design", "Graphic Design"],
-      methods: "Component Library, Design Tokens, Figma Variables, Documentation, Stakeholder Alignment",
-      full: {
-        overview:
-          "A comprehensive design system for a B2B SaaS product, from token architecture to a full component library and docs site.",
-        role: "Design Systems Lead",
-        duration: "6 months",
-        outcome: "60% faster handoff / 3 teams aligned / 200+ components",
-        sections: [
-          {
-            heading: "The Problem",
-            body: "Three product teams were working from diverging Figma files, creating inconsistent UIs and expensive rework in engineering.",
-          },
-          {
-            heading: "Process",
-            body: "Audited six months of shipped product. Identified 47 component variants to consolidate. Built tokens first, then components, then documentation.",
-          },
-          {
-            heading: "Outcome",
-            body: "System adopted across all three teams within two months. New feature design time dropped from about five days to about two days per screen.",
-          },
-        ],
-      },
-    },
-    {
-      id: 3,
-      title: "Health App 0-1",
-      subtitle: "Mobile / 2023",
-      desc: "Led product design for a health-tracking app from concept to App Store launch. 4.8-star rating, featured by Apple.",
-      tags: ["UX Design"],
-      methods: "User Research, iOS Design, Figma, Usability Testing, Product Strategy",
-      full: {
-        overview:
-          "A greenfield mobile product for a health-tech startup, from zero to App Store in five months.",
-        role: "Solo Product Designer",
-        duration: "5 months",
-        outcome: "4.8-star App Store / 12k downloads month 1 / Featured by Apple",
-        sections: [
-          {
-            heading: "Discovery",
-            body: "Ran a two-week discovery sprint, eight user interviews, and competitive benchmarking across 12 health apps. Defined three core user archetypes.",
-          },
-          {
-            heading: "Design",
-            body: "Built the full information architecture, interaction model, and visual identity. Shipped four rounds of usability testing.",
-          },
-          {
-            heading: "Launch",
-            body: "Worked in two-week sprints with two engineers. Shipped MVP in five months. Apple featured it in 'New Apps We Love.'",
-          },
-        ],
-      },
-    },
-    {
-      id: 4,
-      title: "Brand Identity",
-      subtitle: "Branding / 2024",
-      desc: "Full visual identity for a DTC food brand: logo, type, packaging, and guidelines. Launched across four markets.",
-      tags: ["Graphic Design"],
-      methods: "Logo Design, Typography, Colour, Packaging, Brand Guidelines, Adobe Suite",
-      full: {
-        overview:
-          "End-to-end brand identity for a direct-to-consumer food startup entering a crowded market.",
-        role: "Brand Designer",
-        duration: "3 months",
-        outcome: "4 markets / 2 packaging awards / 3x social engagement",
-        sections: [
-          {
-            heading: "Strategy",
-            body: "Positioned the brand at the intersection of craft food and modern minimalism, targeting urban professionals who cook for pleasure.",
-          },
-          {
-            heading: "Visual Identity",
-            body: "Developed the wordmark, icon system, color palette, and typographic hierarchy. Everything was tested across digital and physical touchpoints.",
-          },
-          {
-            heading: "Packaging",
-            body: "Applied the identity across six SKUs. Won a regional packaging design award. Instagram grew to 40k followers in three months organically.",
-          },
-        ],
-      },
-    },
-    {
-      id: 5,
-      title: "Motion Rebrand",
-      subtitle: "Motion / 2024",
-      desc: "Animated brand system for a web3 gaming community: logo reveals, UI transitions, and social content.",
-      tags: ["Graphic Design"],
-      methods: "After Effects, Lottie, Motion Design, Brand Strategy, Social Templates",
-      full: {
-        overview: "Motion-first rebrand for a web3 gaming community with 80k members.",
-        role: "Motion & Brand Designer",
-        duration: "2 months",
-        outcome: "12 channels updated / 4x engagement vs static",
-        sections: [
-          {
-            heading: "Brief",
-            body: "The community had outgrown its rough brand. They needed something premium and native to the crypto and gaming aesthetic without being cliche.",
-          },
-          {
-            heading: "Motion System",
-            body: "Designed a kinetic logo reveal with three variants, UI motion principles, and a 30-piece animated social template library.",
-          },
-          {
-            heading: "Results",
-            body: "All 12 channels updated within a week. Animated posts averaged four times the engagement of previous static content.",
-          },
-        ],
-      },
-    },
+    projectLibrary.bluread,
+    projectLibrary.netprep,
   ];
 
   const INITIAL_SKILLS = [
-    { id: "s1", label: "UX Research", px: 9, py: 18, subs: ["User Interviews", "Surveys", "Usability Tests", "Affinity Maps"] },
-    { id: "s2", label: "Interaction Design", px: 38, py: 10, subs: ["Flows", "Wireframes", "Micro-interactions", "IA"] },
-    { id: "s3", label: "Prototyping", px: 68, py: 20, subs: ["Figma", "Lo-fi", "Hi-fi", "Click-through"] },
-    { id: "s4", label: "Design Systems", px: 20, py: 50, subs: ["Tokens", "Components", "Docs", "Figma Vars"] },
-    { id: "s5", label: "Brand Identity", px: 50, py: 45, subs: ["Logo", "Typography", "Colour", "Guidelines"] },
-    { id: "s6", label: "Motion Design", px: 75, py: 55, subs: ["After Effects", "Lottie", "CSS Anim", "Storyboarding"] },
-    { id: "s7", label: "Front-end", px: 35, py: 78, subs: ["React", "HTML/CSS", "Framer", "Webflow"] },
+    { id: "s1", label: "UX Research", color: "#3A3A7C", px: 8, py: 12, subs: ["Usability testing", "User interviews", "Mixed-methods analysis", "Wizard-of-Oz"] },
+    { id: "s2", label: "Interaction Design", color: "#1C6B4A", px: 42, py: 8, subs: ["Information architecture", "User flows & wireframing", "Micro-interactions", "Accessibility (WCAG)"] },
+    { id: "s3", label: "Visual & Brand Design", color: "#8B3A1A", px: 72, py: 16, subs: ["Design systems", "Typography & layout", "Brand identity", "Motion design"] },
+    { id: "s4", label: "Prototyping & Front-end", color: "#2B5FAC", px: 18, py: 40, subs: ["Hi-fi prototyping", "Front-end build (HTML/JS)", "AI-assisted design tools", "Dev handoff"] },
+    { id: "s5", label: "AI Stack", color: "#5B4B9A", px: 55, py: 38, subs: ["Claude", "OpenAI Codex", "Figma Make", "Figma MCP"] },
+    { id: "s6", label: "Design Software", color: "#6B1A1A", px: 80, py: 50, subs: ["Figma", "Adobe Creative Cloud", "Canva", "WordPress"] },
+    { id: "s7", label: "Research & Data Tools", color: "#1A5C3A", px: 12, py: 68, subs: ["Qualtrics", "Power BI", "R / Python", "Notion"] },
+    { id: "s8", label: "Front-end Languages", color: "#1A3A6B", px: 48, py: 72, subs: ["HTML/CSS", "JavaScript", "React"] },
+    { id: "s9", label: "Soft Skills", color: "#8C6A12", px: 75, py: 82, subs: ["Stakeholder communication", "Cross-functional collaboration", "Design storytelling", "Self-direction"] },
   ];
 
   const CONTACT_LINKS = [
-    ["Email", "hello@yourname.com", "mailto:hello@yourname.com"],
-    ["LinkedIn", "linkedin.com/in/yourname", "https://linkedin.com"],
-    ["Read.cv", "read.cv/yourname", "https://read.cv"],
+    ["Email", "medha101@student.ubc.ca", "mailto:medha101@student.ubc.ca"],
+    ["LinkedIn", "linkedin.com/in/medha-singh-ux", "https://www.linkedin.com/in/medha-singh-ux/"],
     ["Resume", "Download PDF", "#"],
   ];
 
   const SOCIAL_LINKS = [
-    ["LinkedIn", "https://linkedin.com/in/yourname"],
+    ["LinkedIn", "https://www.linkedin.com/in/medha-singh-ux/"],
     ["Behance", "https://www.behance.net/yourname"],
   ];
 
