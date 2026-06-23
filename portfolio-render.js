@@ -569,7 +569,80 @@
     `;
   }
 
+  function renderGalleryProjectPage(project) {
+    return `
+      <div class="project-gallery">
+        <div class="gallery-header">
+          <button type="button" class="button-ghost gallery-back" data-hover data-nav-back>&#8592; Back</button>
+          <div class="gallery-header-meta">
+            <div class="gallery-tags">
+              ${project.tags.map((tag) => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join("")}
+            </div>
+            <p class="eyebrow gallery-subtitle">${escapeHtml(project.subtitle)}</p>
+            <h1 class="gallery-title">${escapeHtml(project.title)}</h1>
+            ${project.full.overview ? `<p class="gallery-overview">${escapeHtml(project.full.overview)}</p>` : ""}
+            ${project.full.metaItems?.length ? `
+              <div class="gallery-meta-row">
+                ${project.full.metaItems.map((item) => `
+                  <div class="gallery-meta-item">
+                    <p class="gallery-meta-label">${escapeHtml(item.label)}</p>
+                    <p class="gallery-meta-value">${escapeHtml(item.value)}</p>
+                  </div>
+                `).join("")}
+              </div>
+            ` : ""}
+          </div>
+        </div>
+        <div class="gallery-flow">
+          ${project.full.modules
+            .map((module) => {
+              if (module.type === "image") {
+                return `
+                  <figure class="gallery-figure">
+                    <img
+                      class="gallery-image"
+                      src="${escapeHtml(module.src)}"
+                      alt="${escapeHtml(module.alt || project.title)}"
+                      loading="${escapeHtml(module.loading || "lazy")}"
+                      data-lightbox-image
+                      data-lightbox-src="${escapeHtml(module.src)}"
+                      data-lightbox-alt="${escapeHtml(module.alt || project.title)}"
+                    >
+                  </figure>
+                `;
+              }
+              if (module.type === "row") {
+                return `
+                  <div class="gallery-row">
+                    ${module.items.map((item) => `
+                      <figure class="gallery-figure gallery-figure-half" style="flex:${item.flex ?? 1}">
+                        <img
+                          class="gallery-image"
+                          src="${escapeHtml(item.src)}"
+                          alt="${escapeHtml(item.alt || project.title)}"
+                          loading="lazy"
+                          data-lightbox-image
+                          data-lightbox-src="${escapeHtml(item.src)}"
+                          data-lightbox-alt="${escapeHtml(item.alt || project.title)}"
+                        >
+                      </figure>
+                    `).join("")}
+                  </div>
+                `;
+              }
+              if (module.type === "video") return renderVideoModule(module, project.title);
+              return "";
+            })
+            .join("")}
+        </div>
+      </div>
+    `;
+  }
+
   function renderProjectPage(project) {
+    if (project.pageLayout === "gallery") {
+      return renderGalleryProjectPage(project);
+    }
     if (project.full.modules?.length) {
       return renderStructuredProjectPage(project);
     }

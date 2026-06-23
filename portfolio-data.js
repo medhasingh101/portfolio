@@ -4,6 +4,7 @@
     projectLibrary.sidequest,
     projectLibrary.bluread,
     projectLibrary.netprep,
+    projectLibrary.sisu,
   ];
 
   const INITIAL_SKILLS = [
