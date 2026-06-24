@@ -438,12 +438,13 @@
                 </p>
               </div>
               <div class="hero-actions">
-                <div class="hero-btn-drag-wrap" data-hero-drag="work" style="transform:translate(${wOff.x}px,${wOff.y}px)">
-                  <div class="hero-work-cluster">
+                <div class="hero-work-cluster" style="transform:translate(${wOff.x}px,${wOff.y}px)">
+                  <div class="hero-btn-drag-wrap" data-hero-drag="work">
                     <button type="button" class="hero-work-img-btn" data-hover data-hero-work>
                       <img src="${state.dark ? 'assets/work - dark.png' : 'assets/work.png'}" alt="See my work" class="hero-work-img" />
                     </button>
-                    <div class="hero-work-branches">
+                  </div>
+                  <div class="hero-work-branches">
                       <div class="hero-work-branch">
                         <img src="assets/arrow ux-design.png" alt="" class="hero-work-branch-arrow" aria-hidden="true" />
                         <button type="button" class="hero-work-branch-btn" data-hover data-nav-page="ux">

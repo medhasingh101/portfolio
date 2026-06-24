@@ -779,7 +779,9 @@ function attachGlobalEvents() {
       const nextX = heroDragState.startX + dx;
       const nextY = heroDragState.startY + dy;
       state.heroBtnOffsets[heroDragState.key] = { x: nextX, y: nextY };
-      const node = document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
+      const node = heroDragState.key === "work"
+        ? document.querySelector(".hero-work-cluster")
+        : document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
       if (node) node.style.transform = `translate(${nextX}px, ${nextY}px)`;
       return;
     }
@@ -838,7 +840,9 @@ function attachGlobalEvents() {
       const nextX = heroDragState.startX + dx;
       const nextY = heroDragState.startY + dy;
       state.heroBtnOffsets[heroDragState.key] = { x: nextX, y: nextY };
-      const node = document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
+      const node = heroDragState.key === "work"
+        ? document.querySelector(".hero-work-cluster")
+        : document.querySelector(`[data-hero-drag="${heroDragState.key}"]`);
       if (node) node.style.transform = `translate(${nextX}px, ${nextY}px)`;
       return;
     }
