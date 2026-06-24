@@ -595,7 +595,21 @@ function attachEvents() {
 
   const skillsCanvas = document.querySelector("[data-skills-canvas]");
   if (skillsCanvas) {
+    let longPressTimer = null;
+    let longPressStartX = 0;
+    let longPressStartY = 0;
+
+    const collapseAllSkills = () => {
+      skillsCanvas.querySelectorAll(".skill-node.is-expanded").forEach((n) => n.classList.remove("is-expanded"));
+    };
+
+    document.addEventListener("touchstart", (e) => {
+      if (!e.target.closest("[data-skills-canvas]")) collapseAllSkills();
+    }, { passive: true });
+
     document.querySelectorAll("[data-skill-handle]").forEach((handle) => {
+      const node = handle.closest(".skill-node");
+
       const startDrag = (clientX, clientY) => {
         const rect = skillsCanvas.getBoundingClientRect();
         const skill = state.skills.find((item) => item.id === handle.dataset.skillHandle);
@@ -618,11 +632,64 @@ function attachEvents() {
       });
 
       handle.addEventListener("touchstart", (event) => {
-        event.preventDefault();
         const touch = event.touches[0];
+        longPressStartX = touch.clientX;
+        longPressStartY = touch.clientY;
+
+        longPressTimer = setTimeout(() => {
+          longPressTimer = null;
+          const alreadyExpanded = node && node.classList.contains("is-expanded");
+          collapseAllSkills();
+          if (node && !alreadyExpanded) node.classList.add("is-expanded");
+        }, 500);
+
         startDrag(touch.clientX, touch.clientY);
-      }, { passive: false });
+      }, { passive: true });
+
+      handle.addEventListener("touchmove", (event) => {
+        if (!longPressTimer) return;
+        const touch = event.touches[0];
+        const dx = touch.clientX - longPressStartX;
+        const dy = touch.clientY - longPressStartY;
+        if (Math.sqrt(dx * dx + dy * dy) > 8) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+      }, { passive: true });
+
+      handle.addEventListener("touchend", () => {
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+      });
     });
+  }
+
+  const workCluster = document.querySelector(".hero-work-cluster");
+  if (workCluster) {
+    let branchRevealTimer = null;
+    const workBtn = workCluster.querySelector("[data-hero-work]");
+
+    workBtn?.addEventListener("touchstart", () => {
+      branchRevealTimer = setTimeout(() => {
+        branchRevealTimer = null;
+        workCluster.classList.add("is-touch-open");
+      }, 300);
+    }, { passive: true });
+
+    workBtn?.addEventListener("touchend", () => {
+      if (branchRevealTimer) {
+        clearTimeout(branchRevealTimer);
+        branchRevealTimer = null;
+      }
+    });
+
+    document.addEventListener("touchstart", (e) => {
+      if (!workCluster.contains(e.target)) {
+        workCluster.classList.remove("is-touch-open");
+      }
+    }, { passive: true });
   }
 
   document.querySelectorAll("[data-hero-drag]").forEach((wrap) => {

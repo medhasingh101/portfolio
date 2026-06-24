@@ -439,9 +439,25 @@
               </div>
               <div class="hero-actions">
                 <div class="hero-btn-drag-wrap" data-hero-drag="work" style="transform:translate(${wOff.x}px,${wOff.y}px)">
-                  <button type="button" class="hero-work-img-btn" data-hover data-hero-work>
-                    <img src="${state.dark ? 'assets/work - dark.png' : 'assets/work.png'}" alt="See my work" class="hero-work-img" />
-                  </button>
+                  <div class="hero-work-cluster">
+                    <button type="button" class="hero-work-img-btn" data-hover data-hero-work>
+                      <img src="${state.dark ? 'assets/work - dark.png' : 'assets/work.png'}" alt="See my work" class="hero-work-img" />
+                    </button>
+                    <div class="hero-work-branches">
+                      <div class="hero-work-branch">
+                        <img src="assets/arrow ux-design.png" alt="" class="hero-work-branch-arrow" aria-hidden="true" />
+                        <button type="button" class="hero-work-branch-btn" data-hover data-nav-page="ux">
+                          <img src="assets/ux-design.png" alt="UX Design" class="hero-work-branch-img" />
+                        </button>
+                      </div>
+                      <div class="hero-work-branch">
+                        <img src="assets/arrow graphic design.png" alt="" class="hero-work-branch-arrow" aria-hidden="true" />
+                        <button type="button" class="hero-work-branch-btn" data-hover data-nav-page="graphic">
+                          <img src="assets/graphic design.png" alt="Graphic Design" class="hero-work-branch-img" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -450,9 +466,6 @@
                 (item) => `<span class="hero-proof-item">${escapeHtml(item)}</span>`
               ).join("")}
             </div>
-          </div>
-          <div class="hero-scroll">
-            <span class="hero-scroll-label">selected work below</span>
           </div>
         </section>
       </div>
@@ -740,14 +753,7 @@
         </div>
         <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>MEDHA.</button>
         <div class="site-nav-links">
-          <div class="nav-dropdown-wrap ${state.workMenuOpen ? "is-open" : ""}" data-work-wrap>
-            <button type="button" class="nav-button" data-hover data-work-toggle aria-expanded="${state.workMenuOpen ? "true" : "false"}">Work &#9662;</button>
-            <div class="nav-dropdown">
-              <button type="button" class="nav-dropdown-button nav-dropdown-button-bordered" data-hover data-nav-page="ux">UX Design</button>
-              <button type="button" class="nav-dropdown-button" data-hover data-nav-page="graphic">Graphic Design</button>
-            </div>
-          </div>
-          <button type="button" class="nav-button" data-hover data-nav-about>About</button>
+          <a href="https://drive.google.com/file/d/14fUNUMKbeWSZlCl-CfwXEUFrsEVeUfcf/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="nav-button" data-hover>Resume</a>
           <button type="button" class="nav-button" data-hover data-contact-open>Contact</button>
         </div>
       </nav>
