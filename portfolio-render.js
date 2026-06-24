@@ -461,7 +461,6 @@
                   </div>
                 </div>
               </div>
-            </div>
             <div class="hero-stats" aria-label="Experience highlights">
               ${window.portfolioData.HERO_PROOF_POINTS.map(
                 (item) => `<span class="hero-proof-item">${escapeHtml(item)}</span>`
