@@ -328,6 +328,7 @@ button {
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  text-decoration: none;
   white-space: nowrap;
 }
 
@@ -2799,8 +2800,17 @@ button {
   }
 
   .hero-work-img {
-    height: 64px;
+    height: 44px;
   }
+
+  .hero-work-branches {
+    gap: 14px;
+  }
+
+  .hero-work-branch:nth-child(1) .hero-work-branch-arrow { width: 44px; }
+  .hero-work-branch:nth-child(2) .hero-work-branch-arrow { width: 48px; }
+  .hero-work-branch:nth-child(1) .hero-work-branch-img { width: 76px; }
+  .hero-work-branch:nth-child(2) .hero-work-branch-img { width: 68px; }
 
   .hero-side-nav {
     gap: 12px;
@@ -2823,6 +2833,10 @@ button {
 
   .hero-label {
     margin-bottom: 12px;
+  }
+
+  .hero-actions {
+    margin-left: 0;
   }
 
   .bio-intro {
