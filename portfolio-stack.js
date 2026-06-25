@@ -4,7 +4,7 @@
   const STACK_MIN_REVEAL_DISTANCE = 240;
   const STACK_REVEAL_RATIO = 0.38;
   const STACK_DWELL_RATIO = 1.0;   // fraction of revealDistance to hold each card before next slides in
-  const STACK_ZOOM_OUT = 0.03;
+  const STACK_ZOOM_OUT = 0.06;
   const STACK_ELEVATED_SHADOW = "0 22px 48px rgba(15, 23, 42, 0.16)";
 
   let initialized = false;
@@ -38,6 +38,7 @@
     if (elements.bgFade) elements.bgFade.style.opacity = "";
     elements.projectStackItems.forEach((item) => {
       item.style.transform = "";
+      item.style.opacity = "";
       item.style.boxShadow = "";
       item.style.visibility = "";
     });
@@ -96,7 +97,9 @@
 
       const translateY = cardHeight * (1 - slideProgress);
       const scale = 1 - coverProgress * STACK_ZOOM_OUT;
+      const opacity = clamp(1 - coverProgress * 1.15, 0, 1);
       item.style.transform = `translateY(${translateY}px) scale(${scale})`;
+      item.style.opacity = opacity;
       item.style.visibility = slideProgress <= 0 ? "hidden" : "";
       item.style.boxShadow = slideProgress > 0 && slideProgress < 1 ? STACK_ELEVATED_SHADOW : "";
     });

@@ -491,6 +491,8 @@ button {
 .hero-top {
   display: flex;
   justify-content: flex-end;
+  position: relative;
+  z-index: 2;
 }
 
 .hero::before {
@@ -508,6 +510,8 @@ button {
 .hero-actions {
   margin-top: 56px;
   margin-left: -48px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-btn-drag-wrap {
@@ -942,11 +946,13 @@ button {
   --stack-top: 72px;
   --stack-panel-gap: 24px;
   padding-bottom: 12vh;
+  pointer-events: none;
 }
 
 .stack-sticky {
   position: sticky;
   top: var(--stack-top);
+  pointer-events: auto;
   height: calc(100vh - var(--stack-top) - 4px);
 }
 
@@ -1146,7 +1152,7 @@ button {
 .stack-panel-work .project-card-preview {
   margin-bottom: 10px;
   aspect-ratio: 16 / 7;
-  border-color: rgba(19, 0, 124, 0.22);
+  border-color: rgba(19, 0, 124, 0.38);
 }
 
 .stack-panel-work .project-card-title {
@@ -1331,9 +1337,9 @@ button {
 .project-card-overlay-text {
   color: #FFFEFB;
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: clamp(11px, 1.4vw, 14px);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.55;
   text-align: center;
 }
 
@@ -1429,17 +1435,12 @@ button {
 }
 
 .skills-canvas-note {
-  display: block;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  margin-bottom: 12px;
-  padding: 4px 0;
-  background: var(--surface);
+  background: none;
   color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   pointer-events: none;
+  margin-left: 4px;
 }
 
 .skill-node {
@@ -2285,7 +2286,7 @@ button {
 .contact-link {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   border: 1px solid var(--rule);
   border-radius: var(--radius-block);
   background: var(--surface-soft);
@@ -2295,6 +2296,16 @@ button {
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.08em;
+  overflow: hidden;
+}
+
+.contact-link-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .contact-link:hover {
@@ -2304,6 +2315,20 @@ button {
 .contact-link-label {
   color: var(--muted);
   font-size: 10px;
+}
+
+.contact-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.contact-link:hover .contact-link-icon {
+  color: var(--accent);
 }
 
 .site-footer {
@@ -2424,6 +2449,26 @@ button {
 
   .stack-sticky {
     height: calc(100vh - var(--stack-top) - 12px);
+  }
+
+  .stack-panel-work {
+    padding: 20px 16px 16px;
+  }
+
+  .stack-panel-work .section-header {
+    margin-bottom: 12px;
+  }
+
+  .project-stack-body {
+    align-items: center;
+  }
+
+  .project-stack-body .project-stack {
+    margin-bottom: 20px;
+  }
+
+  .stack-panel-work .project-card-overlay {
+    padding: 14px;
   }
 
   .stack-panel-skills .stack-panel-body {

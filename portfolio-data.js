@@ -21,12 +21,12 @@
 
   const CONTACT_LINKS = [
     ["Email", "medha101@student.ubc.ca", "mailto:medha101@student.ubc.ca"],
-    ["LinkedIn", "linkedin.com/in/medha-singh-ux", "https://www.linkedin.com/in/medha-singh-ux/"],
-    ["Resume", "Download PDF", "https://drive.google.com/file/d/14fUNUMKbeWSZlCl-CfwXEUFrsEVeUfcf/view?usp=sharing"],
+    ["LinkedIn", "medhasinghux", "https://www.linkedin.com/in/medhasinghux/"],
+    ["Resume", "View Resume", "https://drive.google.com/file/d/14fUNUMKbeWSZlCl-CfwXEUFrsEVeUfcf/view?usp=sharing"],
   ];
 
   const SOCIAL_LINKS = [
-    ["LinkedIn", "https://www.linkedin.com/in/medha-singh-ux/"],
+    ["LinkedIn", "https://www.linkedin.com/in/medhasinghux/"],
     ["Behance", "https://www.behance.net/yourname"],
   ];
 

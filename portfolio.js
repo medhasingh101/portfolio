@@ -671,17 +671,25 @@ function attachEvents() {
     let branchRevealTimer = null;
     const workBtn = workCluster.querySelector("[data-hero-work]");
 
+    let longPressActivated = false;
+
     workBtn?.addEventListener("touchstart", () => {
+      longPressActivated = false;
       branchRevealTimer = setTimeout(() => {
         branchRevealTimer = null;
+        longPressActivated = true;
         workCluster.classList.add("is-touch-open");
       }, 300);
     }, { passive: true });
 
-    workBtn?.addEventListener("touchend", () => {
+    workBtn?.addEventListener("touchend", (e) => {
       if (branchRevealTimer) {
         clearTimeout(branchRevealTimer);
         branchRevealTimer = null;
+      }
+      if (longPressActivated) {
+        e.preventDefault();
+        longPressActivated = false;
       }
     });
 
