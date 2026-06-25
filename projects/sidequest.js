@@ -63,7 +63,7 @@
           type: "text",
           layout: "full",
           html: `
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+            <div class="sq-personas">
               <div style="border:1px solid rgba(0,0,0,0.09);border-radius:8px;padding:28px 30px;">
                 <p style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Jihoon, 22</p>
                 <p style="margin-bottom:14px;color:var(--muted);">Upfront clarity on time and cost before he'll try anything</p>

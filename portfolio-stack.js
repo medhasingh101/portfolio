@@ -16,9 +16,7 @@
     return {
       sequence: document.querySelector("[data-stack-sequence]"),
       sticky: document.querySelector("[data-stack-sticky]"),
-      workScroll: document.querySelector("[data-stack-scroll]"),
-      workScrollInner: document.querySelector("[data-stack-scroll-inner]"),
-      workScrollbarThumb: document.querySelector("[data-work-scrollbar-thumb]"),
+      projectStackItems: Array.from(document.querySelectorAll("[data-project-stack-item]")),
       workPanel: document.querySelector('[data-stack-panel="work"]'),
       skillsPanel: document.querySelector('[data-stack-panel="skills"]'),
       aboutPanel: document.querySelector('[data-stack-panel="about"]'),
@@ -33,13 +31,11 @@
   }
 
   function resetPanels(elements) {
-    if (elements.sequence) {
-      elements.sequence.style.minHeight = "";
-    }
-    if (elements.workScrollInner) {
-      elements.workScrollInner.style.transform = "";
-    }
-
+    if (elements.sequence) elements.sequence.style.minHeight = "";
+    elements.projectStackItems.forEach((item) => {
+      item.style.transform = "";
+      item.style.boxShadow = "";
+    });
     [elements.workPanel, elements.skillsPanel, elements.aboutPanel].forEach((panel) => {
       if (!panel) return;
       panel.style.transform = "";
@@ -49,35 +45,42 @@
 
   function sync() {
     const elements = getElements();
-    const { sequence, sticky, workScroll, workScrollInner, workScrollbarThumb, workPanel, skillsPanel, aboutPanel } = elements;
+    const { sequence, sticky, projectStackItems, workPanel, skillsPanel, aboutPanel } = elements;
 
-    if (!sequence || !sticky || !workScroll || !workScrollInner || !workPanel || !skillsPanel || !aboutPanel) {
+    if (!sequence || !sticky || !projectStackItems.length || !workPanel || !skillsPanel || !aboutPanel) {
       resetPanels(elements);
       return;
     }
 
     const { topOffset, panelGap } = getMetrics(sequence);
     const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
-    const stickyHeight = sticky.offsetHeight;
-    const workScrollDistance = Math.max(0, workScrollInner.scrollHeight - workScroll.clientHeight);
+    const numCards = projectStackItems.length;
+    const workScrollDistance = (numCards - 1) * revealDistance;
     const totalProgress = workScrollDistance + revealDistance * 2;
+    const stickyHeight = sticky.offsetHeight;
     const sequenceHeight = stickyHeight + totalProgress + topOffset;
     const sequenceTop = sequence.offsetTop;
     const progress = clamp(window.scrollY - sequenceTop + topOffset, 0, totalProgress);
 
     sequence.style.minHeight = `${sequenceHeight}px`;
-    workScrollInner.style.transform = `translateY(-${Math.min(workScrollDistance, progress)}px)`;
 
-    if (workScrollbarThumb && workScrollDistance > 0) {
-      const trackHeight = workScroll.clientHeight;
-      const thumbRatio = trackHeight / workScrollInner.scrollHeight;
-      const thumbHeight = Math.max(32, trackHeight * thumbRatio);
-      const scrolled = Math.min(workScrollDistance, progress);
-      const thumbTop = (scrolled / workScrollDistance) * (trackHeight - thumbHeight);
-      workScrollbarThumb.style.height = `${thumbHeight}px`;
-      workScrollbarThumb.style.transform = `translateY(${thumbTop}px)`;
-    }
+    // Animate project cards
+    const cardHeight = projectStackItems[0] ? projectStackItems[0].offsetHeight : 0;
+    projectStackItems.forEach((item, i) => {
+      const slideProgress = i === 0
+        ? 1
+        : clamp((progress - (i - 1) * revealDistance) / revealDistance, 0, 1);
+      const coverProgress = i >= numCards - 1
+        ? 0
+        : clamp((progress - i * revealDistance) / revealDistance, 0, 1);
 
+      const translateY = cardHeight * (1 - slideProgress);
+      const scale = 1 - coverProgress * STACK_ZOOM_OUT;
+      item.style.transform = `translateY(${translateY}px) scale(${scale})`;
+      item.style.boxShadow = slideProgress > 0 && slideProgress < 1 ? STACK_ELEVATED_SHADOW : "";
+    });
+
+    // Animate main panels
     const skillsProgress = clamp((progress - workScrollDistance) / revealDistance, 0, 1);
     const aboutProgress = clamp((progress - workScrollDistance - revealDistance) / revealDistance, 0, 1);
     const hiddenOffset = stickyHeight + panelGap;
@@ -95,50 +98,35 @@
   }
 
   function scrollToSkillsSection() {
-    const elements = getElements();
-    const { sequence, sticky, workScroll } = elements;
-
-    if (!sequence || !sticky || !workScroll) return;
+    const { sequence, sticky, projectStackItems } = getElements();
+    if (!sequence || !sticky || !projectStackItems.length) return;
 
     const { topOffset } = getMetrics(sequence);
     const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
-    const workScrollDistance = Math.max(0, workScroll.scrollHeight - workScroll.clientHeight);
+    const workScrollDistance = (projectStackItems.length - 1) * revealDistance;
     const targetTop = sequence.offsetTop + workScrollDistance + revealDistance - topOffset;
 
-    window.scrollTo({
-      top: Math.max(0, targetTop),
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
   }
 
   function scrollToAboutSection() {
-    const elements = getElements();
-    const { sequence, sticky, workScroll } = elements;
-
-    if (!sequence || !sticky || !workScroll) return;
+    const { sequence, sticky, projectStackItems } = getElements();
+    if (!sequence || !sticky || !projectStackItems.length) return;
 
     const { topOffset } = getMetrics(sequence);
     const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
-    const workScrollDistance = Math.max(0, workScroll.scrollHeight - workScroll.clientHeight);
+    const workScrollDistance = (projectStackItems.length - 1) * revealDistance;
     const targetTop = sequence.offsetTop + workScrollDistance + revealDistance * 2 - topOffset;
 
-    window.scrollTo({
-      top: Math.max(0, targetTop),
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
   }
 
   function scrollToWorkSection() {
     const { sequence } = getElements();
-
     if (!sequence) return;
 
     const { topOffset } = getMetrics(sequence);
-
-    window.scrollTo({
-      top: Math.max(0, sequence.offsetTop - topOffset),
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: Math.max(0, sequence.offsetTop - topOffset), behavior: "smooth" });
   }
 
   function initialize() {

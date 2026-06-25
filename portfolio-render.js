@@ -474,14 +474,13 @@
           <div class="stack-sticky" data-stack-sticky>
             <div class="content-section stack-panel stack-panel-work" data-stack-panel="work">
               ${sectionHeader("01", "Selected Work")}
-              <div class="stack-panel-body stack-panel-body-scroll" data-stack-scroll>
-                <div class="stack-panel-body-inner" data-stack-scroll-inner>
-                  <div class="project-grid">
-                    ${window.portfolioData.PROJECTS.map((project) => projectCard(project, state)).join("")}
-                  </div>
-                </div>
-                <div class="stack-scrollbar" aria-hidden="true">
-                  <div class="stack-scrollbar-thumb" data-work-scrollbar-thumb></div>
+              <div class="stack-panel-body project-stack-body">
+                <div class="project-stack" data-project-stack>
+                  ${window.portfolioData.PROJECTS.map((project, i) => `
+                    <div class="project-stack-item" data-project-stack-item style="z-index:${i + 1}">
+                      ${projectCard(project, state)}
+                    </div>
+                  `).join("")}
                 </div>
               </div>
             </div>

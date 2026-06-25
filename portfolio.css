@@ -620,7 +620,7 @@ button {
   max-width: 100%;
   color: var(--ink);
   font-family: var(--sans);
-  font-size: clamp(14px, 1.2vw, 16px);
+  font-size: clamp(16px, 1.5vw, 20px);
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.01em;
@@ -1109,10 +1109,27 @@ button {
   grid-auto-rows: 1fr;
 }
 
+.project-stack-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.project-stack {
+  display: grid;
+  overflow: hidden;
+  width: min(700px, 100%);
+}
+
+.project-stack-item {
+  grid-area: 1 / 1;
+  transform-origin: 50% 0%;
+  will-change: transform;
+}
+
 .stack-panel-work .project-card {
-  height: 100%;
-  min-height: 0;
   padding: 14px;
+  background: var(--surface);
 }
 
 .stack-panel-work .project-card-preview {
@@ -1910,6 +1927,11 @@ button {
   cursor: pointer;
 }
 
+/* Back card: hide caption so it doesn't bleed out from behind the front card */
+.sq-ab-card-b .sq-ab-card-caption {
+  display: none;
+}
+
 /* Flipped state: B on top, triggered by JS class toggle */
 .sq-ab-stack.sq-ab-flipped .sq-ab-card-a {
   z-index: 1;
@@ -1918,10 +1940,18 @@ button {
   cursor: pointer;
 }
 
+.sq-ab-stack.sq-ab-flipped .sq-ab-card-a .sq-ab-card-caption {
+  display: none;
+}
+
 .sq-ab-stack.sq-ab-flipped .sq-ab-card-b {
   z-index: 2;
   transform: translate(0, 0);
   cursor: default;
+}
+
+.sq-ab-stack.sq-ab-flipped .sq-ab-card-b .sq-ab-card-caption {
+  display: block;
 }
 
 .sq-ab-stack.sq-ab-flipped .sq-ab-card-b img {
@@ -1978,6 +2008,13 @@ button {
 
 .sq-ab-stack.sq-ab-flipped ~ .sq-ab-hint .sq-ab-hint-b {
   display: inline;
+}
+
+/* Responsive 3-column persona grid */
+.sq-personas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .case-study-embed {
@@ -2515,7 +2552,7 @@ button {
 
 .gallery-meta-row {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-self: center;
   gap: 28px 72px;
   margin-top: 32px;
@@ -2789,10 +2826,16 @@ button {
   }
 
 
+  .hero-greeting {
+    font-size: clamp(18px, 5vw, 22px);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
   .hero-summary {
     max-width: 100%;
-    font-size: clamp(16px, 4.8vw, 21px);
-    line-height: 1.34;
+    font-size: clamp(16px, 4.5vw, 19px);
+    line-height: 1.6;
   }
 
   .hero-stats {
@@ -2848,8 +2891,8 @@ button {
   }
 
   .bio-intro-line {
-    font-size: clamp(15px, 4.3vw, 18px);
-    line-height: 1.6;
+    font-size: clamp(13px, 3.6vw, 15px);
+    line-height: 1.85;
   }
 
 
@@ -2859,5 +2902,30 @@ button {
 
   .contact-modal {
     padding: 40px 24px 32px;
+  }
+
+  .sq-personas {
+    grid-template-columns: 1fr;
+  }
+
+  .sq-ab-stack {
+    padding-right: 20px;
+    padding-bottom: 20px;
+  }
+
+  .sq-ab-card-b {
+    transform: translate(20px, 20px);
+  }
+
+  .sq-ab-stack.sq-ab-flipped .sq-ab-card-a {
+    transform: translate(20px, 20px);
+  }
+
+  .sq-ab-hint {
+    padding-right: 20px;
+  }
+
+  .sq-boxplot-row {
+    grid-template-columns: 1fr;
   }
 }
