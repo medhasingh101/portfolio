@@ -472,6 +472,7 @@
 
       <section class="stack-sequence" data-stack-sequence>
           <div class="stack-sticky" data-stack-sticky>
+            <div class="stack-bg-fade" data-stack-bg-fade></div>
             <div class="content-section stack-panel stack-panel-work" data-stack-panel="work">
               ${sectionHeader("01", "Selected Work")}
               <div class="stack-panel-body project-stack-body">
