@@ -252,9 +252,18 @@ function getHistoryData() {
   };
 }
 
+function slugify(title) {
+  return title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
+function getProjectSlug(projectId) {
+  const project = window.portfolioData.PROJECTS.find(p => p.id === projectId);
+  return project ? slugify(project.title) : String(projectId);
+}
+
 function getRouteHash() {
   if (state.page === "project" && state.activeProjectId != null) {
-    return `#project-${state.activeProjectId}`;
+    return `#project-${getProjectSlug(state.activeProjectId)}`;
   }
   return state.page !== "home" ? `#${state.page}` : "#home";
 }
@@ -964,10 +973,16 @@ try {
   attachGlobalEvents();
   const _hash = window.location.hash.slice(1);
   if (_hash && _hash !== "home") {
-    const _projectMatch = _hash.match(/^project-(\d+)$/);
+    const _projectMatch = _hash.match(/^project-(.+)$/);
     if (_projectMatch) {
-      state.page = "project";
-      state.activeProjectId = Number(_projectMatch[1]);
+      const _slug = _projectMatch[1];
+      const _project = window.portfolioData.PROJECTS.find(p =>
+        slugify(p.title) === _slug || String(p.id) === _slug
+      );
+      if (_project) {
+        state.page = "project";
+        state.activeProjectId = _project.id;
+      }
     } else {
       state.page = _hash;
     }
