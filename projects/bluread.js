@@ -77,7 +77,7 @@
           type: "image",
           src: "./assets/bluread - initial brainstorming.jpg",
           alt: "Bluread — initial brainstorming sketch.",
-          layout: "full",
+          layout: "compact",
         },
         {
           type: "section",
