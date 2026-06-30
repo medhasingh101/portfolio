@@ -72,8 +72,8 @@ function applyThemeChange() {
     { sel: ".hero-side-img[alt='About me']",  light: "assets/about me.png",          dark: "assets/about me - dark.png" },
     { sel: ".hero-side-img[alt='Skills']",     light: "assets/skills.png",            dark: "assets/skills - dark.png" },
     { sel: ".hero-work-img",                   light: "assets/work.png",              dark: "assets/work - dark.png" },
-    { sel: ".nav-brand-img",                   light: "assets/Medha - light mode.png", dark: "assets/Medha - dark mode.png" },
-    { sel: ".hero-greeting-img",               light: "assets/Medha - light mode.png", dark: "assets/Medha - dark mode.png" },
+    { sel: ".nav-brand-img",                   light: "assets/Medha - light mode.png",       dark: "assets/Medha - dark mode.png" },
+    { sel: ".hero-greeting-img",               light: "assets/medha hero - light mode.png",  dark: "assets/medha hero - dark mode.png" },
   ];
   heroImgs.forEach(({ sel, light, dark }) => {
     const el = document.querySelector(sel);

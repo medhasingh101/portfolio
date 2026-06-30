@@ -430,7 +430,7 @@
           <div class="hero-main">
             <div class="hero-copy">
               <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
-              <p class="hero-greeting">Hi, I'm <img src="${state.dark ? 'assets/Medha - dark mode.png' : 'assets/Medha - light mode.png'}" alt="" aria-hidden="true" class="hero-greeting-img" /><span class="sr-only">Medha</span></p>
+              <p class="hero-greeting">Hi, I'm <img src="${state.dark ? 'assets/medha hero - dark mode.png' : 'assets/medha hero - light mode.png'}" alt="" aria-hidden="true" class="hero-greeting-img" /><span class="sr-only">Medha</span></p>
               <p class="hero-summary">a Product and User Experience Designer with academic foundations in human cognition and computer science.</p>
               <div class="bio-intro" aria-label="Designer bio highlights">
                 <p class="bio-intro-line">
