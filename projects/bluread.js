@@ -111,14 +111,6 @@
         },
         {
           type: "section",
-          id: "build",
-          title: "How We Built It",
-          html: `
-            <p>The project was developed as a <strong>lightweight browser extension</strong> using a combination of HTML, CSS, and JavaScript. We focused on building a clean popup interface for user customization and a robust <strong>content script that scans and filters web elements in real time</strong>. By avoiding external trackers and cookies, we prioritized a lean codebase that puts <strong>performance and privacy</strong> at the forefront of the user experience.</p>
-          `,
-        },
-        {
-          type: "section",
           id: "challenges",
           title: "Challenges",
           html: `
