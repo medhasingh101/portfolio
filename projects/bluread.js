@@ -5,7 +5,7 @@
     id: 6,
     title: "Bluread",
     subtitle: "Chrome Extension / cmd-f Hackathon 2026",
-    desc: "Designed and built a privacy-first Chrome extension that gives people back ownership of their knowledge consumption by filtering out triggering news content.",
+    desc: "A privacy-first Chrome extension that lets users filter triggering content from their news feed in real time. Built and shipped in 24 hours.",
     tags: ["UX Design", "Front-End Development"],
     methods: "Product Design, Interface Design, Chrome Extension, Front-End Development",
     color: "#e0e4ed",
@@ -17,12 +17,11 @@
     previewImagePadding: "0px",
     full: {
       overview:
-        "Bluread is a privacy-first Chrome extension that gives users autonomy over their news feeds. Built in 24 hours at cmd-f 2026, it lets people select specific keyword filters to hide articles that are violent, tragic, or designed to trigger a stressful reaction — with a no-cookie architecture and a strict no-data-sell-out policy.",
+        "A privacy-first Chrome extension that lets users filter triggering content from their news feed in real time. Built and shipped in 24 hours.",
       metaItems: [
-        { label: "Role", value: "Product Designer, Front-End Developer" },
-        { label: "Timeline", value: "24-hour hackathon, cmd-f 2026" },
-        { label: "Team", value: "2 Interaction Designers, 2 Back-End Developers" },
-        { label: "Skills", value: "Product Design, Interface Design" },
+        { label: "Role", value: "UX/UI Designer — interface concept, popup UI design, interaction decisions" },
+        { label: "Timeline", value: "24-hour hackathon, March 2026" },
+        { label: "Team", value: "Medha Singh (UX/UI Design), Angela Shen (Interaction Design + Front-End), Kassiyet Adilbay (Back-End), Inayat Kang (Back-End)" },
         { label: "Recognition", value: "Winner — UBC CS Project Hub, cmd-f 2026" },
         { label: "Tech Stack", value: "HTML/CSS, Vanilla JS, Manifest V3, OpenAI API, Gemini API" },
       ],
@@ -36,19 +35,57 @@
         },
         {
           type: "section",
-          id: "inspiration",
-          title: "Inspiration",
+          id: "problem",
+          title: "Problem",
           html: `
-            <p>Digital environments often prioritize <strong>high-arousal, negative content</strong> because it captures attention, regardless of the cost to the user's mental well-being. Research shows that the repetitive cycle of "media-hyped" crises can <strong>increase public anxiety</strong> and distort perceptions of reality, making individual control over content consumption a vital digital literacy skill.</p>
-            <p>We wanted to build a tool that helps users <strong>reclaim their "digital diet"</strong> and protect their headspace from the constant barrage of sensationalist news.</p>
+            <p>Digital environments surface high-arousal, negative content because it captures attention. Research by Vasterman (2018) shows that repetitive exposure to media-hyped crises increases public anxiety and distorts perception of reality.</p>
+            <p>Existing solutions are all-or-nothing: block the site, install a distraction blocker, go offline. None of them let users stay informed while controlling what they're exposed to.</p>
+            <div class="case-study-option-list">
+              <div class="case-study-option">
+                <p><strong>No selective control</strong></p>
+                <p>Users can block a site entirely or consume everything. There's no middle ground.</p>
+              </div>
+              <div class="case-study-option">
+                <p><strong>Preset filters don't fit personal triggers</strong></p>
+                <p>What's distressing is individual. A fixed category list removes the autonomy the tool is supposed to give back.</p>
+              </div>
+              <div class="case-study-option">
+                <p><strong>Privacy cost</strong></p>
+                <p>Most filtering tools store browsing behaviour. The tool that's meant to protect you hands your data to someone else.</p>
+              </div>
+            </div>
           `,
+        },
+        {
+          type: "section",
+          id: "design-process",
+          title: "Design Process",
+          html: `
+            <p><strong>First sketch: preset category toggles</strong></p>
+            <p>Violence, tragedy, politics — fixed categories users could switch on or off. Fast to design, easy to build.</p>
+            <p>Mentor feedback at hour 6 killed it: who decides what counts as violence? Preset categories impose someone else's definition of triggering.</p>
+            <p><strong>Pivot: free-entry keyword input</strong></p>
+            <p>Users type their own terms. Someone managing grief can filter a specific name. Someone avoiding a news cycle can filter exactly the phrases affecting them. The tool becomes personal rather than prescriptive.</p>
+            <p>Why this worked: it kept the privacy promise consistent — if we're not deciding what's harmful for you, we're also not storing what you decided.</p>
+            <p><strong>Interface shift: popup → side panel</strong></p>
+            <p>The original popup interrupted the browsing session. A side panel sits passively until needed, closer to how people actually want a background tool to behave.</p>
+            <p><strong>Privacy as a design constraint, not just a technical one</strong></p>
+            <p>No-cookie architecture meant user keywords had to live in local browser storage only. This ruled out cross-device sync.</p>
+          `,
+        },
+        {
+          type: "image",
+          src: "./assets/bluread - initial brainstorming.jpg",
+          alt: "Bluread — initial brainstorming sketch.",
+          layout: "full",
         },
         {
           type: "section",
           id: "solution",
           title: "Solution",
           html: `
-            <p>Bluread gives users <strong>autonomy over their news feeds</strong> by letting them select specific keyword filters to hide articles related to topics that are violent, tragic, or intentionally designed to trigger a stressful reaction — <strong>without selling or storing their browsing data</strong>.</p>
+            <p>Bluread gives users a side panel to enter their own keyword filters. Active on any news page, it scans the DOM in real time and blurs matching articles and videos without logging, storing, or transmitting data outside the browser.</p>
+            <p>Content is blurred rather than removed: page layout stays intact, and users can still click through if they choose.</p>
           `,
         },
         {
@@ -63,7 +100,7 @@
           id: "demo",
           title: "Demo",
           html: `
-            <p>A walkthrough of Bluread in action - selecting keyword filters and watching triggering content get blurred in real time.</p>
+            <p>A walkthrough of Bluread in action — selecting keyword filters and watching triggering content get blurred in real time.</p>
           `,
         },
         {
@@ -100,9 +137,9 @@
           id: "reflection",
           title: "Reflection",
           html: `
-            <p>We're proud of building a tool that delivers on its <strong>privacy promise</strong> — in an era where "free" tools usually come at the cost of personal data, <strong>refusing to sell user information</strong> was a deliberate choice we stuck with under hackathon time pressure. We also managed to make the filtering process <strong>feel natural rather than disruptive</strong>, supporting a more intentional and calm reading experience.</p>
-            <p>This project reinforced how closely <strong>emotional well-being is tied to the information we consume</strong>, and how important it is for designers and developers to consider the psychological impact of what they build. Technically, it deepened our understanding of <strong>DOM manipulation and privacy-preserving web development</strong>.</p>
-            <p>Next, we'd like to <strong>expand the keyword library</strong>, refine detection of sensationalist "clickbait" titles, bring the extension to other browsers, and add a <strong>focus mode</strong> that summarizes articles to further soften the impact of inflammatory language.</p>
+            <p>The mentor feedback at hour 6 was the most useful moment of the build. We had a finished solution, clean toggles, clear categories. The question "who decides what's triggering?" reframed it in ten minutes.</p>
+            <p>Designing under a fixed deadline clarified which decisions actually mattered. Free-entry keywords over preset categories: mattered. Side panel over popup: mattered. The exact blur opacity: didn't.</p>
+            <p>What I'd do differently: sketch two or three input models before committing. We went with the first approach that worked technically. A tag-based input with suggested completions might have been more intuitive for users.</p>
           `,
         },
       ],
