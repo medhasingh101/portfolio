@@ -240,10 +240,11 @@
         },
 
         {
-          type: "text",
-          html: `
-            <a href="https://www.figma.com/design/RUKgPyrSL2MdbXX74pAmNe/Low-Fidelity-Prototype?node-id=0-1&t=4MNMKhPi8Zv1GQY1-1" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--accent);border-radius:4px;padding:14px 24px;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);text-decoration:none;">View Figma Prototype &rarr;</a>
-          `,
+          type: "embed",
+          src: "https://embed.figma.com/proto/UmWRo9921RT6Cuyx6EEaK8/SideQuest-Prototype?node-id=306-1765&p=f&viewport=1042%2C275%2C0.09&scaling=scale-down&content-scaling=fixed&starting-point-node-id=457%3A1650&page-id=0%3A1&embed-host=share",
+          title: "SideQuest Figma Prototype",
+          aspectRatio: "16/9",
+          caption: "Interactive mid-fidelity prototype",
         },
 
         // ── EXPERIMENT ───────────────────────────────────────────────

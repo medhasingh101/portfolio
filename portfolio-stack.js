@@ -3,14 +3,25 @@
   const STACK_PANEL_GAP = 24;
   const STACK_MIN_REVEAL_DISTANCE = 240;
   const STACK_REVEAL_RATIO = 0.38;
-  const STACK_DWELL_RATIO = 1.0;   // fraction of revealDistance to hold each card before next slides in
+  const STACK_DWELL_RATIO = 1.0;
   const STACK_ZOOM_OUT = 0.06;
   const STACK_ELEVATED_SHADOW = "0 22px 48px rgba(15, 23, 42, 0.16)";
+  const LERP_FACTOR = 0.1;
 
   let initialized = false;
+  let smoothScrollY = -1;
+  let rafId = null;
 
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
   function getElements() {
@@ -52,11 +63,11 @@
   function computeDistances() {
     const revealDistance = Math.max(STACK_MIN_REVEAL_DISTANCE, Math.round(window.innerHeight * STACK_REVEAL_RATIO));
     const dwellDistance = Math.round(revealDistance * STACK_DWELL_RATIO);
-    const cardSlot = revealDistance + dwellDistance; // scroll distance "owned" by each card
+    const cardSlot = revealDistance + dwellDistance;
     return { revealDistance, dwellDistance, cardSlot };
   }
 
-  function sync() {
+  function applySync(scrollY) {
     const elements = getElements();
     const { sequence, sticky, bgFade, projectStack, projectStackItems, workPanel, skillsPanel, aboutPanel } = elements;
 
@@ -69,31 +80,27 @@
     const { revealDistance, cardSlot } = computeDistances();
     const numCards = projectStackItems.length;
 
-    // workScrollDistance = scroll needed to fully reveal the last card
     const workScrollDistance = (numCards - 1) * cardSlot;
     const totalProgress = workScrollDistance + revealDistance * 2;
     const stickyHeight = sticky.offsetHeight;
     const sequenceHeight = stickyHeight + totalProgress + topOffset;
     const sequenceTop = sequence.offsetTop;
-    const progress = clamp(window.scrollY - sequenceTop + topOffset, 0, totalProgress);
+    const progress = clamp(scrollY - sequenceTop + topOffset, 0, totalProgress);
 
     sequence.style.minHeight = `${sequenceHeight}px`;
 
-    // Use the grid's actual rendered height for clip accuracy
     const cardHeight = (projectStack ? projectStack.offsetHeight : 0) || (projectStackItems[0] ? projectStackItems[0].offsetHeight : 0);
 
     projectStackItems.forEach((item, i) => {
-      // Card i slides in during: [(i-1)*cardSlot … (i-1)*cardSlot + revealDistance]
       const slideStart = (i - 1) * cardSlot;
       const slideProgress = i === 0
         ? 1
-        : clamp((progress - slideStart) / revealDistance, 0, 1);
+        : easeInOutCubic(clamp((progress - slideStart) / revealDistance, 0, 1));
 
-      // Card i starts being covered by card i+1 at: i*cardSlot
       const coverStart = i * cardSlot;
       const coverProgress = i >= numCards - 1
         ? 0
-        : clamp((progress - coverStart) / revealDistance, 0, 1);
+        : easeInOutCubic(clamp((progress - coverStart) / revealDistance, 0, 1));
 
       const translateY = cardHeight * (1 - slideProgress);
       const scale = 1 - coverProgress * STACK_ZOOM_OUT;
@@ -104,9 +111,8 @@
       item.style.boxShadow = slideProgress > 0 && slideProgress < 1 ? STACK_ELEVATED_SHADOW : "";
     });
 
-    // Animate main panels (skills + about slide in after all cards are revealed)
-    const skillsProgress = clamp((progress - workScrollDistance) / revealDistance, 0, 1);
-    const aboutProgress = clamp((progress - workScrollDistance - revealDistance) / revealDistance, 0, 1);
+    const skillsProgress = easeInOutCubic(clamp((progress - workScrollDistance) / revealDistance, 0, 1));
+    const aboutProgress = easeInOutCubic(clamp((progress - workScrollDistance - revealDistance) / revealDistance, 0, 1));
     const hiddenOffset = stickyHeight + panelGap;
     const workScale = 1 - skillsProgress * STACK_ZOOM_OUT;
     const skillsScale = 1 - aboutProgress * STACK_ZOOM_OUT;
@@ -120,13 +126,40 @@
     aboutPanel.style.transform = `translateY(${aboutY}px) scale(1)`;
     aboutPanel.style.boxShadow = aboutProgress > 0 ? STACK_ELEVATED_SHADOW : "";
 
-    // Fade background to --paper colour as the sequence enters, back out as it exits
     if (bgFade) {
-      const rawScroll = window.scrollY - sequenceTop;
+      const rawScroll = scrollY - sequenceTop;
       const fadeIn = clamp(rawScroll / (revealDistance * 0.6), 0, 1);
       const fadeOut = clamp((rawScroll - totalProgress) / (revealDistance * 0.6), 0, 1);
       bgFade.style.opacity = fadeIn - fadeOut;
     }
+  }
+
+  function tick() {
+    rafId = null;
+    const target = window.scrollY;
+
+    if (smoothScrollY < 0) smoothScrollY = target;
+
+    smoothScrollY = lerp(smoothScrollY, target, LERP_FACTOR);
+    applySync(smoothScrollY);
+
+    if (Math.abs(smoothScrollY - target) > 0.25) {
+      rafId = requestAnimationFrame(tick);
+    } else {
+      smoothScrollY = target;
+      applySync(smoothScrollY);
+    }
+  }
+
+  function scheduleSync() {
+    if (!rafId) {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
+
+  function sync() {
+    smoothScrollY = window.scrollY;
+    applySync(smoothScrollY);
   }
 
   function scrollToSkillsSection() {
@@ -167,7 +200,7 @@
     if (initialized) return;
     initialized = true;
 
-    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("scroll", scheduleSync, { passive: true });
     window.addEventListener("resize", sync);
   }
 
