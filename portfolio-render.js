@@ -430,7 +430,7 @@
           <div class="hero-main">
             <div class="hero-copy">
               <p class="eyebrow hero-label">${escapeHtml(window.portfolioData.HERO_EYEBROW)}</p>
-              <p class="hero-greeting">Hi, I'm Medha</p>
+              <p class="hero-greeting">Hi, I'm <img src="${state.dark ? 'assets/Medha - dark mode.png' : 'assets/Medha - light mode.png'}" alt="Medha" class="hero-greeting-img" /></p>
               <p class="hero-summary">a Product and User Experience Designer with academic foundations in human cognition and computer science.</p>
               <div class="bio-intro" aria-label="Designer bio highlights">
                 <p class="bio-intro-line">
@@ -761,7 +761,9 @@
             <span class="theme-toggle-label sr-only">${state.dark ? "Light mode" : "Dark mode"}</span>
           </button>
         </div>
-        <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>MEDHA.</button>
+        <button type="button" class="nav-button nav-button-brand" data-hover data-nav-home>
+          <img src="${state.dark ? 'assets/Medha - dark mode.png' : 'assets/Medha - light mode.png'}" alt="Medha" class="nav-brand-img" />
+        </button>
         <div class="site-nav-links">
           <a href="https://drive.google.com/file/d/14fUNUMKbeWSZlCl-CfwXEUFrsEVeUfcf/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="nav-button" data-hover>Resume</a>
           <button type="button" class="nav-button" data-hover data-contact-open>Contact</button>

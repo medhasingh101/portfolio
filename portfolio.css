@@ -292,6 +292,13 @@ button {
   white-space: nowrap;
 }
 
+.nav-brand-img {
+  height: 22px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .site-nav-links {
   display: flex;
   align-items: center;
@@ -618,6 +625,13 @@ button {
   font-size: clamp(22px, 2vw, 28px);
   font-weight: 600;
   animation: fadeUp 0.8s 0.25s both;
+}
+
+.hero-greeting-img {
+  height: clamp(27px, 2.5vw, 34px);
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .hero-summary {
