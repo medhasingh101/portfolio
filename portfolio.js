@@ -2,6 +2,7 @@ const state = {
   page: "home",
   activeProjectId: null,
   projectReturnPage: "home",
+  galleryReturnPage: "home",
   contactOpen: false,
   lightboxOpen: false,
   lightboxSrc: "",
@@ -484,7 +485,15 @@ function attachEvents() {
   });
 
   document.querySelectorAll("[data-nav-page]").forEach((button) => {
-    button.addEventListener("click", () => handlePageChange(button.dataset.navPage));
+    button.addEventListener("click", () => {
+      const page = button.dataset.navPage;
+      if (page === "gallery") state.galleryReturnPage = state.page;
+      handlePageChange(page);
+    });
+  });
+
+  document.querySelectorAll("[data-gallery-back]").forEach((button) => {
+    button.addEventListener("click", () => handlePageChange(state.galleryReturnPage || "home"));
   });
 
   document.querySelectorAll("[data-hero-work]").forEach((button) => {

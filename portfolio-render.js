@@ -504,21 +504,90 @@
               <div class="stack-panel-body">
                 <div class="about-grid">
                   <div class="about-photo">
-                    <img src="assets/about me - picture.png" alt="Medha Singh" class="about-photo-img" />
+                    <img src="assets/about me - picture.png" alt="Medha Singh" class="about-photo-img" style="cursor:zoom-in" data-lightbox-image data-lightbox-src="assets/about me - picture.png" data-lightbox-alt="Medha Singh" />
                   </div>
                   <div>
-                    ${typeReveal("I design with clarity and intention", "h2", "about-title", 80)}
                     ${window.portfolioData.BIO_ABOUT.map((para, i) => `
                       <p class="about-copy${i < window.portfolioData.BIO_ABOUT.length - 1 ? " about-copy-spaced" : ""}">
                         ${escapeHtml(para)}
                       </p>
                     `).join("")}
+                    <p class="about-art-link">
+                      <button type="button" class="about-art-btn" data-hover data-nav-page="gallery">See my art &rarr;</button>
+                    </p>
+                    <div class="about-table">
+                  <div class="about-table-col">
+                    <div class="about-table-group">
+                      <p class="about-table-heading">Experience</p>
+                      <div class="about-table-row">
+                        <span class="about-table-item">B2C Product Designer &middot; Great Dane Cafe</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">B2C Lead Web Designer &middot; UBC SISU</span>
+                        <span class="about-table-year">2025&ndash;2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">SaaS UX Design Intern &middot; Demash Analytics</span>
+                        <span class="about-table-year">2024</span>
+                      </div>
+                    </div>
+                    <div class="about-table-group">
+                      <p class="about-table-heading">Projects</p>
+                      <div class="about-table-row">
+                        <span class="about-table-item">UX Designer &amp; Frontend Dev &middot; BluRead</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">UX Research &amp; Product Design &middot; SideQuest</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">HCI Research &middot; NetPrep</span>
+                        <span class="about-table-year">2025</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="about-table-col">
+                    <div class="about-table-group">
+                      <p class="about-table-heading">Leadership</p>
+                      <div class="about-table-row">
+                        <span class="about-table-item">VP Admin &middot; UBC SISU</span>
+                        <span class="about-table-year">2025&ndash;2026</span>
+                      </div>
+                    </div>
+                    <div class="about-table-group">
+                      <p class="about-table-heading">Awards</p>
+                      <div class="about-table-row">
+                        <span class="about-table-item">Winner, UBC CS Project Hub &middot; BluRead, cmd-f</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">Most Creative Conceptual Model &middot; SideQuest</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">People&#8217;s Choice Award &middot; NetPrep</span>
+                        <span class="about-table-year">2025</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">Outstanding International Student Award &middot; UBC</span>
+                        <span class="about-table-year">2026</span>
+                      </div>
+                      <div class="about-table-row">
+                        <span class="about-table-item">Top 4% of Graduating Class &middot; Amity University</span>
+                        <span class="about-table-year">2023</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
       </section>
+
     `;
   }
 
@@ -725,9 +794,20 @@
     `;
   }
 
+  function renderGalleryPage() {
+    return `
+      <div class="gallery-soon">
+        <button type="button" class="button-ghost gallery-soon-back" data-hover data-gallery-back>&#8592; Back</button>
+        <p class="eyebrow gallery-soon-label">Gallery</p>
+        <p class="gallery-soon-text">Coming soon.</p>
+      </div>
+    `;
+  }
+
   function renderMain(state) {
     if (state.page === "ux") return renderWorkPage("UX Design", "UX Design", state);
     if (state.page === "graphic") return renderWorkPage("Graphic Design", "Graphic Design", state);
+    if (state.page === "gallery") return renderGalleryPage();
 
     const activeProject = getActiveProject(state);
     if (state.page === "project" && activeProject) return renderProjectPage(activeProject);

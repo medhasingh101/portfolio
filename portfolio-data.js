@@ -77,8 +77,9 @@
   ];
 
   const BIO_ABOUT = [
-    "Hi, I'm Medha",
-    "a Product and User Experience Designer with academic foundations in human cognition and computer science. I work across areas of user research, interaction design, and web design.",
+    "Hi, I'm Medha :)",
+    "a recent graduate specializing in Human Computer Interaction Design at the University of British Columbia, with integrated majors in Cognitive Systems, Computer Science (HCI), and Neuroscience. I have experience in both B2C and SaaS User Experience Design. I started university in Mathematics, building a strong foundation in statistics and programming, but I realized I wanted to apply these skills in a more creative, human-centered way. To explore this, I completed a year-long UX Design program in India while travelling, where I discovered and grew my interest in the field.",
+    "When I returned to UBC, I followed that direction and transitioned into Human-Computer Interaction, combining Cognitive Systems, Computer Science (UX Design), and Neuropsychology. This gave me both the technical and scientific grounding needed for UX while also allowing me to build connections, explore creative interests, and actively pursue leadership opportunities outside of academics.",
   ];
 
   window.portfolioData = {

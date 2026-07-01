@@ -4,6 +4,7 @@
   const STACK_MIN_REVEAL_DISTANCE = 240;
   const STACK_REVEAL_RATIO = 0.38;
   const STACK_DWELL_RATIO = 1.0;
+  const STACK_ABOUT_DWELL_RATIO = 2.5;
   const STACK_ZOOM_OUT = 0.06;
   const STACK_ELEVATED_SHADOW = "0 22px 48px rgba(15, 23, 42, 0.16)";
   const LERP_FACTOR = 0.1;
@@ -81,7 +82,8 @@
     const numCards = projectStackItems.length;
 
     const workScrollDistance = (numCards - 1) * cardSlot;
-    const totalProgress = workScrollDistance + revealDistance * 2;
+    const aboutDwell = Math.round(revealDistance * STACK_ABOUT_DWELL_RATIO);
+    const totalProgress = workScrollDistance + revealDistance * 2 + aboutDwell;
     const stickyHeight = sticky.offsetHeight;
     const sequenceHeight = stickyHeight + totalProgress + topOffset;
     const sequenceTop = sequence.offsetTop;
